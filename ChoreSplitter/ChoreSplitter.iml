@@ -8,8 +8,11 @@
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
+<<<<<<< HEAD
     <output url="file://$MODULE_DIR$/build/classes/main" />
     <output-test url="file://$MODULE_DIR$/build/classes/test" />
+=======
+>>>>>>> d8810761553b3986b6e937521f80324ff49b641a
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/.gradle" />
