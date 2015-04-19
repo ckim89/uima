@@ -9,7 +9,7 @@
     <Button
         android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:text="Review"
+        android:text="Members"
         android:id="@+id/button"
         android:layout_alignParentTop="true"
         style="?android:attr/borderlessButtonStyle"
@@ -20,7 +20,7 @@
     <Button
         android:layout_width="175dp"
         android:layout_height="wrap_content"
-        android:text="Insert Cards"
+        android:text="Chores"
         android:id="@+id/button2"
         android:layout_alignParentTop="true"
         style="?android:attr/borderlessButtonStyle"
