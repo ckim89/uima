@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="10dp">
+    android:layout_marginLeft="10dp"
+    android:weightSum="1">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,7 +52,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="left"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -67,13 +69,48 @@
             android:hint="Enter Group Name"
             android:textSize="15dp"
             />
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/abc_ic_ab_back_mtrl_am_alpha"
+            android:onClick="changeLoserMessage"/>
+
     </LinearLayout>
 
     <ListView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="160dp"
+        android:layout_marginTop="10dp"
         android:id="@+id/members_list_view"
         android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/loser_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Loser Text"
+        android:textSize="25dp"
+        android:textStyle="bold"/>
+
+    <TextView
+        android:id="@+id/loser_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="Loser Name Text"
+        android:textSize="20dp"
+        android:textStyle="bold"/>
+
+    <ImageView
+        android:id="@+id/loser_image_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:src="@drawable/avatar1"
+        android:maxWidth="100dp"
+        android:maxHeight="100dp"
+        android:scaleType="fitCenter"
+        android:adjustViewBounds="true"  />
 
 
 </LinearLayout>

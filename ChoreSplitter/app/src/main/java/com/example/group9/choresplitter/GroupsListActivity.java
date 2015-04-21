@@ -7,6 +7,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class GroupsListActivity extends ActionBarActivity {
@@ -102,5 +105,11 @@ public class GroupsListActivity extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    public void changeLoserMessage(View view) {
+        TextView loserTextView = (TextView) findViewById(R.id.loser_text_view);
+        EditText messageField = (EditText) findViewById(R.id.message_field);
+        loserTextView.setText(messageField.getText().toString());
     }
 }

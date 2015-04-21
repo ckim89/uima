@@ -1,6 +1,7 @@
 package com.example.group9.choresplitter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -46,6 +47,8 @@ public class fragment1 extends Fragment {
         memberList.add(new MemberListItem("Andrew Ding", 20, R.drawable.avatar1));
         memberList.add(new MemberListItem("Kevin Zhang", 1, R.drawable.avatar1));
         memberList.add(new MemberListItem("Daniel Kim", 9999, R.drawable.avatar1));
+        memberList.add(new MemberListItem("That Guy", 0, R.drawable.avatar1));
+        memberList.add(new MemberListItem("Joanne Selinski", 3151151, R.drawable.avatar1));
 
         //Build adapter
         ArrayAdapter<MemberListItem> adapter = new MemberListAdapter();
@@ -93,9 +96,12 @@ public class fragment1 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
                 MemberListItem clickedItem = memberList.get(position);
-                String message = "You clicked position " + position + ", which is " + clickedItem.getName();
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                //String message = "You clicked position " + position + ", which is " + clickedItem.getName();
+                //Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getActivity(), MemberDetail.class));
             }
         });
     }
+
+
 }
