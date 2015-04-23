@@ -20,6 +20,10 @@
             android:name=".MemberDetail"
             android:label="@string/title_activity_member_detail" >
         </activity>
+        <activity
+            android:name=".ChoresListActivity"
+            android:label="@string/title_activity_chores_list" >
+        </activity>
     </application>
 
 </manifest>

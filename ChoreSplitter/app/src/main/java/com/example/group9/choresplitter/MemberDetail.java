@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,8 +20,8 @@ import java.util.List;
 public class MemberDetail extends ActionBarActivity {
 
     Context context;
-    private List<Task> claimedChores;
-    private List<Task> completedChores;
+    private List<Task> claimedTasks;
+    private List<Task> completedTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,15 +29,15 @@ public class MemberDetail extends ActionBarActivity {
         setContentView(R.layout.activity_member_detail);
 
         //TODO: pull lists from database
-        claimedChores = new ArrayList<Task>();
-        completedChores = new ArrayList<Task>();
-        claimedChores.add(new Task("Task1", 0));
-        claimedChores.add(new Task("Task2", 5));
-        claimedChores.add(new Task("Task3", 39));
-        completedChores.add(new Task("Task4", 3));
-        completedChores.add(new Task("Task5", 22));
-        completedChores.add(new Task("Task6", 44));
-        completedChores.add(new Task("Task7", 13));
+        claimedTasks = new ArrayList<Task>();
+        completedTasks = new ArrayList<Task>();
+        claimedTasks.add(new Task("Task1", 0));
+        claimedTasks.add(new Task("Task2", 5));
+        claimedTasks.add(new Task("Task3", 39));
+        completedTasks.add(new Task("Task4", 3));
+        completedTasks.add(new Task("Task5", 22));
+        completedTasks.add(new Task("Task6", 44));
+        completedTasks.add(new Task("Task7", 13));
 
         context = getApplicationContext();
         populateListView();
@@ -74,7 +73,7 @@ public class MemberDetail extends ActionBarActivity {
     //Array Adapter used to create the member list
     private class ClaimedTaskListAdapter extends ArrayAdapter<Task> {
         public ClaimedTaskListAdapter() {
-            super(context, R.layout.chores_list_view, claimedChores);
+            super(context, R.layout.chores_list_view, claimedTasks);
         }
 
         @Override
@@ -87,7 +86,7 @@ public class MemberDetail extends ActionBarActivity {
             }
 
             //Find member list item to work with
-            Task currentTask = claimedChores.get(position);
+            Task currentTask = claimedTasks.get(position);
 
             //Fill view
             TextView nameText = (TextView) itemView.findViewById(R.id.chore_list_name);
@@ -110,7 +109,7 @@ public class MemberDetail extends ActionBarActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
-                Task clickedItem = claimedChores.get(position);
+                Task clickedItem = claimedTasks.get(position);
                 String message = "You clicked position " + position + ", which is " + clickedItem.getName();
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
@@ -120,7 +119,7 @@ public class MemberDetail extends ActionBarActivity {
     //Array Adapter used to create the member list
     private class CompletedTaskListAdapter extends ArrayAdapter<Task> {
         public CompletedTaskListAdapter() {
-            super(context, R.layout.chores_list_view, completedChores);
+            super(context, R.layout.chores_list_view, completedTasks);
         }
 
         @Override
@@ -133,7 +132,7 @@ public class MemberDetail extends ActionBarActivity {
             }
 
             //Find member list item to work with
-            Task currentTask = completedChores.get(position);
+            Task currentTask = completedTasks.get(position);
 
             //Fill view
             TextView nameText = (TextView) itemView.findViewById(R.id.chore_list_name);
@@ -154,7 +153,7 @@ public class MemberDetail extends ActionBarActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
-                Task clickedItem = completedChores.get(position);
+                Task clickedItem = completedTasks.get(position);
                 String message = "You clicked position " + position + ", which is " + clickedItem.getName();
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }

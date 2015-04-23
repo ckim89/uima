@@ -1,5 +1,6 @@
 package com.example.group9.choresplitter;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -112,4 +114,13 @@ public class GroupsListActivity extends ActionBarActivity {
         EditText messageField = (EditText) findViewById(R.id.message_field);
         loserTextView.setText(messageField.getText().toString());
     }
+
+
+    public void removeUnclaimedChore(View view) {
+        LinearLayout clickedRow = (LinearLayout) view.getParent();
+        TextView pointsText = (TextView) clickedRow.getChildAt(1);
+        pointsText.setText("EUWEH");
+
+    }
+
 }
