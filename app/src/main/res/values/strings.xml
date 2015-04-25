@@ -9,4 +9,5 @@
     <string name="title_activity_chores_list">ChoresListActivity</string>
     <string name="credits">Credits</string>
     <string name="title_activity_sign_in">SignIn</string>
+    <string name="title_activity_group_list">GroupList</string>
 </resources>

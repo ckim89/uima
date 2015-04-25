@@ -12,10 +12,15 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.LogInCallback;
 import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
+
+import java.util.List;
 
 
 public class SignIn extends ActionBarActivity {
@@ -69,7 +74,6 @@ public class SignIn extends ActionBarActivity {
             public void done(ParseException e) {
                 dlg.dismiss();
                 if (e == null) {
-                    Log.e("Successful sign up!", e.getMessage());
                     Toast.makeText(getApplicationContext(), "Sign up Success!",
                             Toast.LENGTH_LONG).show();
 
@@ -99,13 +103,12 @@ public class SignIn extends ActionBarActivity {
             public void done(ParseUser user, com.parse.ParseException e) {
                 dlg.dismiss();
                 if (user != null) {
-                    Intent createAccount = new Intent(getApplicationContext(), GroupsListActivity.class);
+                    Intent createAccount = new Intent(getApplicationContext(), GroupList.class)
+                            .putExtra("username", user.getString("username"));
                     startActivity(createAccount);
                     finish();
                 } else {
                     // Clear fields since login failed
-                    //usernameField.setText("");
-                    //passwordField.setText("");
 
                     // Alert user of failure
                     Toast.makeText(getApplicationContext(), "Login Failed",
