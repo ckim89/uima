@@ -9,15 +9,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import org.w3c.dom.Text;
 
 import java.lang.reflect.Member;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -26,16 +34,48 @@ import java.util.List;
 public class fragment1 extends Fragment {
     View rootView;
     Context context;
-
+    private List<String> userList;
+    private List<Integer> userpoints;
     private List<MemberListItem> memberList;
+    List<Pair> memPair;
+    Button invite;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        GroupsListActivity mac = (GroupsListActivity) getActivity();
+        final String id = mac.getGroupID();
         rootView = inflater.inflate(R.layout.fragment1, container, false);
         context = rootView.getContext();
+        userList = new ArrayList<String>();
+        userpoints = new ArrayList<Integer>();
+        memPair = new ArrayList<Pair>();
+        invite = (Button)rootView.findViewById(R.id.inviteMember);
+        invite.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View view)
+            {
+                Intent intent = new Intent(getActivity(), Addmember.class);
+                intent.putExtra("GID", id);
+                startActivity(intent);
+                getActivity().finish();
+            }
+        });
 
-        populateListView();
-        registerClickCallback();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Groups");
+        query.whereEqualTo("GroupID", id);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject a : parseObjects) {
+                        userList.add((String) a.get("UserID"));
+                        userpoints.add((Integer) a.get("Points"));
+                    }
+                    populateListView();
+                }
+            }
+
+        });
 
         return rootView;
     }
@@ -44,18 +84,31 @@ public class fragment1 extends Fragment {
         //Create list of items
         //TODO: get member list
         memberList = new ArrayList<MemberListItem>();
-        memberList.add(new MemberListItem("Andrew Ding", 20, R.drawable.avatar1));
-        memberList.add(new MemberListItem("Kevin Zhang", 1, R.drawable.avatar1));
-        memberList.add(new MemberListItem("Daniel Kim", 9999, R.drawable.avatar1));
-        memberList.add(new MemberListItem("That Guy", 0, R.drawable.avatar1));
-        memberList.add(new MemberListItem("Joanne Selinski", 3151151, R.drawable.avatar1));
+        ParseQuery<ParseUser> query1 = ParseUser.getQuery();
+        query1.whereContainedIn("username", userList);
+        query1.findInBackground(new FindCallback<ParseUser>() {
+            public void done(List<ParseUser> objects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject a : objects) {
+                        for (int i=0;i<userList.size();i++) {
+                            if (userList.get(i).equals(a.getString("username"))) {
+                                memberList.add(new MemberListItem(a.getString("username"), userpoints.get(i),
+                                        R.drawable.avatar1));
+                                memPair.add(new Pair(a.getString("username"), userpoints.get(i)));
+                            }
+                        }
+                    }
 
-        //Build adapter
-        ArrayAdapter<MemberListItem> adapter = new MemberListAdapter();
+                    //Build adapter
+                    ArrayAdapter<MemberListItem> adapter = new MemberListAdapter();
 
-        //Configure list view
-        ListView list = (ListView) rootView.findViewById(R.id.members_list_view);
-        list.setAdapter(adapter);
+                    //Configure list view
+                    ListView list = (ListView) rootView.findViewById(R.id.members_list_view);
+                    list.setAdapter(adapter);
+                    registerClickCallback();
+                }
+            }
+        });
     }
 
     //Array Adapter used to create the member list
@@ -101,6 +154,25 @@ public class fragment1 extends Fragment {
                 startActivity(new Intent(getActivity(), MemberDetail.class));
             }
         });
+    }
+
+    public class Pair {
+
+        String username;
+        int points;
+
+        public Pair(String user, int point) {
+            this.username = user;
+            this.points = point;
+        }
+
+        public int getPoint() {
+            return this.points;
+        }
+
+        public String getName() {
+            return this.username;
+        }
     }
 
 

@@ -1,9 +1,12 @@
 package com.example.group9.choresplitter;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -20,6 +23,7 @@ import java.util.List;
 public class GroupList extends ActionBarActivity {
 
     List<String> groups;
+    List<ParseObject> group;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +31,7 @@ public class GroupList extends ActionBarActivity {
         setContentView(R.layout.activity_group_list);
 
         groups = new ArrayList<String>();
+        group = new ArrayList<ParseObject>();
         Bundle extra = getIntent().getExtras();
         String user = extra.getString("username");
 
@@ -39,6 +44,7 @@ public class GroupList extends ActionBarActivity {
                     for (ParseObject a : parseObjects) {
                         String add = (String) a.get("GroupName");
                         groups.add(add);
+                        group.add(a);
                     }
                 }
             }
@@ -49,6 +55,18 @@ public class GroupList extends ActionBarActivity {
                 this, android.R.layout.simple_list_item_1, groups);
 
         lv.setAdapter(adapt);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                ParseObject item = group.get(position);
+                Intent intent = new Intent(getApplicationContext(), GroupsListActivity.class)
+                        .putExtra("GroupID", item.getString("GroupID"))
+                        .putExtra("GroupName", item.getString("GroupName"));
+                startActivity(intent);
+                finish();
+
+            }
+        });
 
     }
 

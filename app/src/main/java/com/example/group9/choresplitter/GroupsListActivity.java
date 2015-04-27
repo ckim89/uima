@@ -13,16 +13,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class GroupsListActivity extends ActionBarActivity {
 
     Button B1;
     Button B2;
+    String GID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_list);
+
+        Bundle extra = getIntent().getExtras();
+        String groupid = extra.getString("GroupID");
+        String name = extra.getString("GroupName");
+        setTitle(name);
+        GID = groupid;
         fragment1 f1 = new fragment1();
         B1 = (Button)findViewById(R.id.button);
         B2 = (Button)findViewById(R.id.button2);
@@ -110,8 +120,8 @@ public class GroupsListActivity extends ActionBarActivity {
 
     public void changeLoserMessage(View view) {
         TextView loserTextView = (TextView) findViewById(R.id.loser_text_view);
-        EditText messageField = (EditText) findViewById(R.id.message_field);
-        loserTextView.setText(messageField.getText().toString());
+        //EditText messageField = (EditText) findViewById(R.id.message_field);
+        //loserTextView.setText(messageField.getText().toString());
     }
 
 
@@ -120,6 +130,10 @@ public class GroupsListActivity extends ActionBarActivity {
         TextView pointsText = (TextView) clickedRow.getChildAt(1);
         pointsText.setText("EUWEH");
 
+    }
+
+    public String getGroupID() {
+        return GID;
     }
 
 }
