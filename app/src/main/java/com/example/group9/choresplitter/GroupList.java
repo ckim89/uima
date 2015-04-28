@@ -35,6 +35,7 @@ public class GroupList extends ActionBarActivity {
         Bundle extra = getIntent().getExtras();
         String user = extra.getString("username");
 
+        final GroupList a = this;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Groups");
         query.whereEqualTo("UserID", user);
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -46,28 +47,25 @@ public class GroupList extends ActionBarActivity {
                         groups.add(add);
                         group.add(a);
                     }
+
+                    ListView lv = (ListView) findViewById(R.id.GroupList);
+                    ListAdapter adapt = new ArrayAdapter<String>(
+                           a , android.R.layout.simple_list_item_1, groups);
+
+                    lv.setAdapter(adapt);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            ParseObject item = group.get(position);
+                            Intent intent = new Intent(getApplicationContext(), GroupsListActivity.class)
+                                    .putExtra("GroupID", item.getString("GroupID"))
+                                    .putExtra("GroupName", item.getString("GroupName"));
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
         });
-
-        ListView lv = (ListView) findViewById(R.id.GroupList);
-        ListAdapter adapt = new ArrayAdapter<String>(
-                this, android.R.layout.simple_list_item_1, groups);
-
-        lv.setAdapter(adapt);
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                ParseObject item = group.get(position);
-                Intent intent = new Intent(getApplicationContext(), GroupsListActivity.class)
-                        .putExtra("GroupID", item.getString("GroupID"))
-                        .putExtra("GroupName", item.getString("GroupName"));
-                startActivity(intent);
-                finish();
-
-            }
-        });
-
     }
 
 
