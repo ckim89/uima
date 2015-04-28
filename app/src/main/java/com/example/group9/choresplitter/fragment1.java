@@ -1,5 +1,6 @@
 package com.example.group9.choresplitter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -42,7 +43,7 @@ public class fragment1 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        GroupsListActivity mac = (GroupsListActivity) getActivity();
+        final GroupsListActivity mac = (GroupsListActivity) getActivity();
         final String id = mac.getGroupID();
         rootView = inflater.inflate(R.layout.fragment1, container, false);
         context = rootView.getContext();
@@ -55,7 +56,7 @@ public class fragment1 extends Fragment {
             public void onClick(View view)
             {
                 Intent intent = new Intent(getActivity(), Addmember.class);
-                intent.putExtra("GID", id);
+                intent.putExtra("GID", id).putExtra("name", mac.getGroupname());
                 startActivity(intent);
                 getActivity().finish();
             }

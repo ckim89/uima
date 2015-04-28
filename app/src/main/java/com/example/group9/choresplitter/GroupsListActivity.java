@@ -22,6 +22,7 @@ public class GroupsListActivity extends ActionBarActivity {
     Button B1;
     Button B2;
     String GID;
+    String name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +31,7 @@ public class GroupsListActivity extends ActionBarActivity {
 
         Bundle extra = getIntent().getExtras();
         String groupid = extra.getString("GroupID");
-        String name = extra.getString("GroupName");
+        name = extra.getString("GroupName");
         setTitle(name);
         GID = groupid;
         fragment1 f1 = new fragment1();
@@ -134,6 +135,10 @@ public class GroupsListActivity extends ActionBarActivity {
 
     public String getGroupID() {
         return GID;
+    }
+
+    public String getGroupname() {
+        return name;
     }
 
 }
