@@ -46,7 +46,7 @@ public class GroupList extends ActionBarActivity {
                         String add = (String) a.get("GroupName");
                         groups.add(add);
                         group.add(a);
-                    }
+                    } //hi dan
 
                     ListView lv = (ListView) findViewById(R.id.GroupList);
                     ListAdapter adapt = new ArrayAdapter<String>(
