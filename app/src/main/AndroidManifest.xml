@@ -40,6 +40,10 @@
             android:name=".Addmember"
             android:label="@string/title_activity_addmember" >
         </activity>
+        <activity
+            android:name=".TaskAuction"
+            android:label="@string/title_activity_task_auction" >
+        </activity>
     </application>
 
 </manifest>
