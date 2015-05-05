@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="40dp">
+    android:layout_height="40dp"
+    android:descendantFocusability="blocksDescendants">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -36,10 +37,12 @@
         android:gravity="center_vertical"/>
 
     <ImageButton
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/cancel_button"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:scaleType="fitXY"
         android:src="@drawable/red_x"
         android:layout_gravity="center_vertical"
-        android:onClick="removeUnclaimedChore"/>
+        android:onClick="cancelUnclaimedChore"
+        android:background="@null"/>
 </LinearLayout>

@@ -1,5 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="40dp"
+    android:descendantFocusability="blocksDescendants">
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/pending_task_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Task Name"
+            android:textSize="15dp"
+            android:textColor="@color/black"/>
+
+        <TextView
+            android:id="@+id/pending_number_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Number of Points"
+            android:textSize="15dp"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/approved_count"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:text="0/4"
+        android:textSize="15dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center_vertical"/>
+
+    <ImageButton
+        android:id="@+id/approve_button"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/thumbs_up"
+        android:layout_gravity="center_vertical"
+        android:onClick="approvePendingChore"
+        android:background="@null"/>
 </LinearLayout>

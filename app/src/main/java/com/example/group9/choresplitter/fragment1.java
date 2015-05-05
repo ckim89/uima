@@ -27,6 +27,7 @@ import org.w3c.dom.Text;
 import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -37,7 +38,7 @@ public class fragment1 extends Fragment {
     Context context;
     private List<String> userList;
     private List<Integer> userpoints;
-    private List<MemberListItem> memberList;
+    private ArrayList<MemberListItem> memberList;
     List<Pair> memPair;
     Button invite;
 
@@ -100,6 +101,7 @@ public class fragment1 extends Fragment {
                         }
                     }
 
+                    memberList = sortMembers(memberList);
                     //Build adapter
                     ArrayAdapter<MemberListItem> adapter = new MemberListAdapter();
 
@@ -176,5 +178,26 @@ public class fragment1 extends Fragment {
         }
     }
 
+    private ArrayList<MemberListItem> sortMembers(ArrayList<MemberListItem> unsortedList) {
+        ArrayList<MemberListItem> sortedList = new ArrayList<MemberListItem>();
+        ArrayList<Integer> pointsList = new ArrayList<Integer>();
 
+        for (int i = 0; i < unsortedList.size(); i++) {
+            pointsList.add(unsortedList.get(i).getPoints());
+        }
+
+        Collections.sort(pointsList, Collections.reverseOrder());
+
+        for (int i = 0; i < unsortedList.size(); i++) {
+            for (MemberListItem m : unsortedList) {
+                if (m.getPoints() == pointsList.get(i)) {
+                    sortedList.add(m);
+                    break;
+                }
+            }
+        }
+        return sortedList;
+    }
+
+    //TODO: added 1 button to add to pending chores
 }

@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,8 +23,12 @@ public class GroupsListActivity extends ActionBarActivity {
 
     Button B1;
     Button B2;
+    TextView H1, H2;
     String GID;
     String name;
+
+    fragment1 f1;
+    fragment2 f2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,23 +40,22 @@ public class GroupsListActivity extends ActionBarActivity {
         name = extra.getString("GroupName");
         setTitle(name);
         GID = groupid;
-        fragment1 f1 = new fragment1();
-        B1 = (Button)findViewById(R.id.button);
-        B2 = (Button)findViewById(R.id.button2);
-        B2.setBackgroundColor(Color.GRAY);
-        B2.setTextColor(Color.DKGRAY);
-        B1.setBackgroundColor(Color.BLUE);
-        B1.setTextColor(Color.WHITE);
+        f1 = new fragment1();
+        B1 = (Button) findViewById(R.id.button);
+        B2 = (Button) findViewById(R.id.button2);
+        H1 = (TextView) findViewById(R.id.highlight1);
+        H2 = (TextView) findViewById(R.id.highlight2);
+
         if (getSupportFragmentManager().findFragmentById(R.id.fr1) != null) {
             getSupportFragmentManager().beginTransaction().
                     remove(getSupportFragmentManager().findFragmentById(R.id.fr1)).commit();
             getSupportFragmentManager().beginTransaction().replace(R.id.fr1, f1).commit();
-        }
-        else {
+        } else {
             getSupportFragmentManager().beginTransaction().
                     add(R.id.fr1, f1).commit();
         }
         setButtons();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
 
@@ -73,26 +78,21 @@ public class GroupsListActivity extends ActionBarActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-        }    }
+        }
+    }
 
     public void setButtons() {
-        B1 = (Button)findViewById(R.id.button);
-        B2 = (Button)findViewById(R.id.button2);
-
         B1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                B2.setBackgroundColor(Color.GRAY);
-                B2.setTextColor(Color.DKGRAY);
-                B1.setBackgroundColor(Color.BLUE);
-                B1.setTextColor(Color.WHITE);
-                fragment1 f1 = new fragment1();
+                H1.setBackgroundColor(Color.parseColor("#FF9999"));
+                H2.setBackgroundColor(Color.parseColor("#EAEAEA"));
+                f1 = new fragment1();
                 if (getSupportFragmentManager().findFragmentById(R.id.fr1) != null) {
                     getSupportFragmentManager().beginTransaction().
                             remove(getSupportFragmentManager().findFragmentById(R.id.fr1)).commit();
                     getSupportFragmentManager().beginTransaction().replace(R.id.fr1, f1).commit();
-                }
-                else {
+                } else {
                     getSupportFragmentManager().beginTransaction().
                             add(R.id.fr1, f1).commit();
                 }
@@ -101,17 +101,14 @@ public class GroupsListActivity extends ActionBarActivity {
         B2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                B1.setBackgroundColor(Color.GRAY);
-                B1.setTextColor(Color.DKGRAY);
-                B2.setBackgroundColor(Color.BLUE);
-                B2.setTextColor(Color.WHITE);
-                fragment2 f2 = new fragment2();
+                H1.setBackgroundColor(Color.parseColor("#EAEAEA"));
+                H2.setBackgroundColor(Color.parseColor("#FF9999"));
+                f2 = new fragment2();
                 if (getSupportFragmentManager().findFragmentById(R.id.fr1) != null) {
                     getSupportFragmentManager().beginTransaction().
                             remove(getSupportFragmentManager().findFragmentById(R.id.fr1)).commit();
                     getSupportFragmentManager().beginTransaction().replace(R.id.fr1, f2).commit();
-                }
-                else {
+                } else {
                     getSupportFragmentManager().beginTransaction().
                             add(R.id.fr1, f2).commit();
                 }
@@ -121,16 +118,21 @@ public class GroupsListActivity extends ActionBarActivity {
 
     public void changeLoserMessage(View view) {
         TextView loserTextView = (TextView) findViewById(R.id.loser_text_view);
-        //EditText messageField = (EditText) findViewById(R.id.message_field);
-        //loserTextView.setText(messageField.getText().toString());
+        EditText messageField = (EditText) findViewById(R.id.message_field);
+        loserTextView.setText(messageField.getText().toString());
     }
 
 
-    public void removeUnclaimedChore(View view) {
-        LinearLayout clickedRow = (LinearLayout) view.getParent();
-        TextView pointsText = (TextView) clickedRow.getChildAt(1);
-        pointsText.setText("EUWEH");
+    public void cancelUnclaimedChore(View view) {
+        f2.cancelUnclaimedChore(view);
+    }
 
+    public void approvePendingChore(View view) {
+        f2.approvePendingChore(view);
+    }
+
+    public void disputeCompletedChore(View view) {
+        f2.disputeCompletedChore(view);
     }
 
     public String getGroupID() {
@@ -141,4 +143,8 @@ public class GroupsListActivity extends ActionBarActivity {
         return name;
     }
 
+    public void addPending(View view) {
+        //ListView l = (ListView) findViewById(R.id.pending_chores_list_view);
+        SignIn.pendingTasks.add(new Task("EUWEH", 1));
+    }
 }

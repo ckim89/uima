@@ -1,6 +1,7 @@
 package com.example.group9.choresplitter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -8,6 +9,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,36 +22,70 @@ import java.util.List;
  * Created by danielkim on 4/9/15.
  */
 public class fragment2 extends Fragment {
-    View rootView;
+    View rootView, unclaimedChoresListView;
     Context context;
 
-    private List<Task> unclaimedTasks;
+    //TODO: swap comments. the static is just for testing purposes
+    private static List<Task> unclaimedTasks, pendingTasks, completedTasks;
+    //private List<Task> unclaimedTasks, pendingTasks, completedTasks;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment2, container, false);
+        unclaimedChoresListView = inflater.inflate(R.layout.unclaimed_chores_list_view, container, false);
         context = rootView.getContext();
+
+        unclaimedTasks = SignIn.unclaimedTasks;
+        pendingTasks = SignIn.pendingTasks;
+        completedTasks = SignIn.completedTasks;
+
+        /*
+        unclaimedTasks = new ArrayList<Task>();
+        pendingTasks = new ArrayList<Task>();
+        completedTasks = new ArrayList<Task>();
+
+
+        initializeListView();
+        */
 
         populateListView();
         registerClickCallback();
 
         return rootView;
     }
+/*
+    private void initializeListView() {
+        unclaimedTasks.add(new Task("Task 1", 3));
+        unclaimedTasks.add(new Task("Task 2", 5));
+        unclaimedTasks.add(new Task("Task 3", 9));
+        unclaimedTasks.add(new Task("Task 4", 2));
+
+        pendingTasks.add(new Task("Task 12", 4));
+        pendingTasks.add(new Task("Task 13", 3));
+        pendingTasks.add(new Task("Task 14", 10));
+        pendingTasks.add(new Task("Task 15", 8));
+
+        completedTasks.add(new Task("Task 35", 8));
+        completedTasks.add(new Task("Task 36", 5));
+        completedTasks.add(new Task("Task 37", 1));
+        completedTasks.add(new Task("Task 38", 2));
+    }
+    */
 
     private void populateListView() {
-        unclaimedTasks = new ArrayList<Task>();
-        unclaimedTasks.add(new Task("Task 1", 1));
-        unclaimedTasks.add(new Task("Task 2", 2));
-        unclaimedTasks.add(new Task("Task 3", 3));
-        unclaimedTasks.add(new Task("Task 4", 4));
-
         //Build adapter
         ArrayAdapter<Task> adapter = new UnclaimedTaskListAdapter();
-
         //Configure list view
         ListView list = (ListView) rootView.findViewById(R.id.unclaimed_chores_list_view);
-
         list.setAdapter(adapter);
+
+        ArrayAdapter<Task> pendingAdapter = new PendingTaskListAdapter();
+        ListView list2 = (ListView) rootView.findViewById(R.id.pending_chores_list_view);
+        list2.setAdapter(pendingAdapter);
+
+        ArrayAdapter<Task> completedAdapter = new CompletedTaskListAdapter();
+        ListView list3 = (ListView) rootView.findViewById(R.id.completed_chores_list_view);
+        list3.setAdapter(completedAdapter);
     }
 
     private class UnclaimedTaskListAdapter extends ArrayAdapter<Task> {
@@ -63,25 +100,73 @@ public class fragment2 extends Fragment {
             if (itemView == null) {
                 itemView = getActivity().getLayoutInflater().inflate(R.layout.unclaimed_chores_list_view, parent, false);
             }
-
             //Find member list item to work with
             Task currentItem = unclaimedTasks.get(position);
-
             //Fill View
-            TextView nameText = (TextView) itemView.findViewById(R.id.unclaimed_task_name);
-            nameText.setText(currentItem.getName());
-
-
-            TextView pointsText = (TextView) itemView.findViewById(R.id.unclaimed_number_points);
-            pointsText.setText(currentItem.getPoints() + "");
-
-            TextView cancelText = (TextView) itemView.findViewById(R.id.unclaimed_cancel);
-            cancelText.setText("0/4");
-
+            TextView unclaimedTaskNameText = (TextView) itemView.findViewById(R.id.unclaimed_task_name);
+            unclaimedTaskNameText.setText(currentItem.getName());
+            TextView unclaimedNumberPointsText = (TextView) itemView.findViewById(R.id.unclaimed_number_points);
+            unclaimedNumberPointsText.setText(currentItem.getPoints() + "");
+            TextView UnclaimedCancelText = (TextView) itemView.findViewById(R.id.unclaimed_cancel);
+            UnclaimedCancelText.setText("0/4");
 
             return itemView;
         }
     }
+
+    private class PendingTaskListAdapter extends ArrayAdapter<Task> {
+        public PendingTaskListAdapter() {
+            super(context, R.layout.pending_chores_list_view, pendingTasks);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            //Make sure we have a view to work with (may have been given null)
+            View itemView = convertView;
+            if (itemView == null) {
+                itemView = getActivity().getLayoutInflater().inflate(R.layout.pending_chores_list_view, parent, false);
+            }
+            //Find member list item to work with
+            Task currentItem = pendingTasks.get(position);
+            //Fill View
+            TextView pendingTaskNameText = (TextView) itemView.findViewById(R.id.pending_task_name);
+            pendingTaskNameText.setText(currentItem.getName());
+            TextView pendingNumberPointsText = (TextView) itemView.findViewById(R.id.pending_number_points);
+            pendingNumberPointsText.setText(currentItem.getPoints() + "");
+            TextView approvedCountText = (TextView) itemView.findViewById(R.id.approved_count);
+            approvedCountText.setText("1/4");
+
+            return itemView;
+        }
+    }
+
+    private class CompletedTaskListAdapter extends ArrayAdapter<Task> {
+        public CompletedTaskListAdapter() {
+            super(context, R.layout.completed_chores_list_view, completedTasks);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            //Make sure we have a view to work with (may have been given null)
+            View itemView = convertView;
+            if (itemView == null) {
+                itemView = getActivity().getLayoutInflater().inflate(R.layout.completed_chores_list_view, parent, false);
+            }
+            //Find member list item to work with
+            Task currentItem = completedTasks.get(position);
+            //Fill View
+            TextView completedTaskNameText = (TextView) itemView.findViewById(R.id.completed_task_name);
+            completedTaskNameText.setText(currentItem.getName());
+            TextView completedNumberPointsText = (TextView) itemView.findViewById(R.id.completed_number_points);
+            completedNumberPointsText.setText(currentItem.getPoints() + "");
+            TextView disputeCountText = (TextView) itemView.findViewById(R.id.dispute_count);
+            disputeCountText.setText("0/4");
+
+            return itemView;
+        }
+    }
+
+
 
     private void registerClickCallback() {
         ListView list = (ListView) rootView.findViewById(R.id.unclaimed_chores_list_view);
@@ -89,9 +174,124 @@ public class fragment2 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
                 Task clickedItem = unclaimedTasks.get(position);
+                /*
+                String message = "You clicked position " + position + ", which is " + clickedItem.getName();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                */
+                Intent intent = new Intent(getActivity(), TaskAuction.class);
+                intent.putExtra("thisTask", clickedItem);
+                startActivity(intent);
+            }
+        });
+
+        ListView list2 = (ListView) rootView.findViewById(R.id.pending_chores_list_view);
+        list2.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
+                Task clickedItem = pendingTasks.get(position);
                 String message = "You clicked position " + position + ", which is " + clickedItem.getName();
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
             }
         });
+
+        ListView list3 = (ListView) rootView.findViewById(R.id.completed_chores_list_view);
+        list3.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
+                Task clickedItem = completedTasks.get(position);
+                String message = "You clicked position " + position + ", which is " + clickedItem.getName();
+                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    public void cancelUnclaimedChore(View view) {
+        //Button click callback
+        LinearLayout clickedRow = (LinearLayout) view.getParent();
+        LinearLayout tempRow = (LinearLayout) clickedRow.getChildAt(0);
+
+        //These two lines get the position that the button is in
+        ListView temp = (ListView) clickedRow.getParent();
+        int position = temp.getPositionForView(view);
+
+        TextView taskName = (TextView) tempRow.getChildAt(0);
+        TextView numPoints = (TextView) tempRow.getChildAt(1);
+        TextView cancelVote = (TextView) clickedRow.getChildAt(1);
+
+        String message = "Pressed " + taskName.getText().toString() +
+                " , which has " + numPoints.getText().toString() +
+                " points and " + cancelVote.getText().toString() + " cancel votes.";
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+        unclaimedTasks.remove(view);
+        populateListView();
+    }
+
+    public void approvePendingChore(View view) {
+        //Button click callback
+        LinearLayout clickedRow = (LinearLayout) view.getParent();
+        LinearLayout tempRow = (LinearLayout) clickedRow.getChildAt(0);
+
+        //These two lines get the position that the button is in
+        ListView temp = (ListView) clickedRow.getParent();
+        int position = temp.getPositionForView(view);
+        Task currentTask = pendingTasks.get(position);
+
+        TextView taskName = (TextView) tempRow.getChildAt(0);
+        TextView numPoints = (TextView) tempRow.getChildAt(1);
+        TextView cancelVote = (TextView) clickedRow.getChildAt(1);
+
+        String message = "Pressed " + taskName.getText().toString() +
+                " , which has " + numPoints.getText().toString() +
+                " points and " + cancelVote.getText().toString() + " approval votes.";
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+        //TODO: uncomment and implement this code
+        /*
+        get member id for current user
+        if member.getApprovedTasks.contains(currentTask) {
+            currentTask.incrementPoints();
+            numPoints.setText(currentTask.getPoints()); //Does this need to be string?
+            //set thumb to less vibrant shade of green
+        } else {
+            currentTask.decrementPoints();
+            numPoints.setText(currentTask.getPoints()); //Does this need to be string?
+            //set thumb to original shade of green
+        }
+
+        if (currentTask.getPoints == number of members in group) {
+            pendingTasks.remove(currentTask);
+        }
+        */
+
+        pendingTasks.remove(currentTask);
+        for (Task t : pendingTasks) {
+            t.print();
+        }
+
+        populateListView();
+    }
+
+    public void disputeCompletedChore(View view) {
+        //Button click callback
+        LinearLayout clickedRow = (LinearLayout) view.getParent();
+        LinearLayout tempRow = (LinearLayout) clickedRow.getChildAt(0);
+
+        //These two lines get the position that the button is in
+        ListView temp = (ListView) clickedRow.getParent();
+        int position = temp.getPositionForView(view);
+
+
+        TextView taskName = (TextView) tempRow.getChildAt(0);
+        TextView numPoints = (TextView) tempRow.getChildAt(1);
+        TextView cancelVote = (TextView) clickedRow.getChildAt(1);
+
+        String message = "Pressed " + taskName.getText().toString() +
+                " , which has " + numPoints.getText().toString() +
+                " points and " + cancelVote.getText().toString() + " cancel votes.";
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+        completedTasks.remove(view);
+        populateListView();
     }
 }

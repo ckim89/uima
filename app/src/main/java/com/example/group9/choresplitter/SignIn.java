@@ -21,6 +21,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 import com.parse.SignUpCallback;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -28,6 +29,11 @@ public class SignIn extends ActionBarActivity {
 
     Button signup;
     Button signin;
+
+    //TODO: delete the initialize array code
+    //I store and create the arrays that hold people here because the onCreate is only called
+    //once in the program.
+    public static List<Task> unclaimedTasks, pendingTasks, completedTasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +44,8 @@ public class SignIn extends ActionBarActivity {
         signin = (Button)findViewById(R.id.signinbutt);
 
         signup.setOnClickListener(
-                new View.OnClickListener()
-                {
-                    public void onClick(View view)
-                    {
+                new View.OnClickListener() {
+                    public void onClick(View view) {
                         signup();
                     }
                 });
@@ -54,6 +58,30 @@ public class SignIn extends ActionBarActivity {
                         signin();
                     }
                 });
+
+        //TODO: remove this code
+        unclaimedTasks = new ArrayList<Task>();
+        pendingTasks = new ArrayList<Task>();
+        completedTasks = new ArrayList<Task>();
+        initializeListView();
+
+    }
+
+    private void initializeListView() {
+        unclaimedTasks.add(new Task("Task 1", 3));
+        unclaimedTasks.add(new Task("Task 2", 5));
+        unclaimedTasks.add(new Task("Task 3", 9));
+        unclaimedTasks.add(new Task("Task 4", 2));
+
+        pendingTasks.add(new Task("Task 12", 4));
+        pendingTasks.add(new Task("Task 13", 3));
+        pendingTasks.add(new Task("Task 14", 10));
+        pendingTasks.add(new Task("Task 15", 8));
+
+        completedTasks.add(new Task("Task 35", 8));
+        completedTasks.add(new Task("Task 36", 5));
+        completedTasks.add(new Task("Task 37", 1));
+        completedTasks.add(new Task("Task 38", 2));
     }
 
     public void signup() {

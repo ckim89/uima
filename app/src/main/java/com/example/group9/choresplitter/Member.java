@@ -14,11 +14,11 @@ public class Member {
     private int points;
     private double completionRate;
     private double freeloaderRate;
-    private boolean upvoted;
-    private boolean disputed;
 
     private List<Task> claimedTasks;
     private List<Task> completedTasks;
+    private List<Task> approvedTasks;
+    private List<Task> disputedTasks;
 
     //TODO: uh how do i associate picture with member?
 
@@ -29,11 +29,11 @@ public class Member {
         points = 0;
         completionRate = 0;
         freeloaderRate = 0;
-        upvoted = false;
-        disputed = false;
 
         claimedTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
+        approvedTasks = new ArrayList<Task>();
+        disputedTasks = new ArrayList<Task>();
     }
 
     public double getUserId() {
@@ -56,19 +56,19 @@ public class Member {
         return freeloaderRate;
     }
 
-    public boolean isUpvoted() {
-        return upvoted;
-    }
-
-    public boolean isDisputed() {
-        return disputed;
-    }
-
     public List<Task> getClaimedTasks() {
         return claimedTasks;
     }
 
     public List<Task> getCompletedTasks() {
         return completedTasks;
+    }
+
+    public List<Task> getApprovedTasks() {
+        return approvedTasks;
+    }
+
+    public List<Task> getDisputedTasks() {
+        return disputedTasks;
     }
 }
