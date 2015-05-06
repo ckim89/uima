@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,28 +48,14 @@ public class Addmember extends ActionBarActivity {
                     public void onClick(View view) {
                         TextView username = (TextView) findViewById(R.id.invuser);
                         String u = username.getText().toString();
-                        ParseQuery<ParseUser> query1 = ParseUser.getQuery();
-                        query1.whereEqualTo("username", u);
-                        query1.findInBackground(new FindCallback<ParseUser>() {
-                            @Override
-                            public void done(List<ParseUser> parseUsers, ParseException e) {
-                                if (e==null) {
-                                    for (ParseUser a : parseUsers) {
-                                        JSONArray b = new JSONArray();
-                                        b.put(groupid);
-                                        a.put("pendingGroups", b);
-                                        a.saveInBackground();
-                                    }
-                                    Toast.makeText(getApplicationContext(), "Invitation Sent!",
-                                            Toast.LENGTH_LONG).show();
-                                    Intent intent = new Intent(getApplicationContext(), GroupsListActivity.class)
-                                            .putExtra("GroupID", groupid)
-                                            .putExtra("GroupName", groupname);
-                                    startActivity(intent);
-                                    finish();
-                                }
-                            }
-                        });
+                        final ParseObject newmem = new ParseObject("Invite");
+                        newmem.put("invited", u);
+                        newmem.put("inviter", ParseUser.getCurrentUser().getUsername());
+                        newmem.put("groupID", groupid);
+                        newmem.put("GroupName", groupname);
+                        newmem.saveInBackground();
+                        Toast.makeText(getApplicationContext(), "Your friend has been invited!", Toast.LENGTH_SHORT).show();
+                        finish();
                     }
                 });
     }

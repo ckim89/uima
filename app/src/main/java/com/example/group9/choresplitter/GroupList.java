@@ -1,6 +1,7 @@
 package com.example.group9.choresplitter;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -25,18 +26,28 @@ public class GroupList extends ActionBarActivity {
 
     List<String> groups;
     List<ParseObject> group;
+    List<String> pgroups;
+    List<ParseObject> pgroup;
+    GroupList a = this;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group_list);
 
+        final ProgressDialog dlg = new ProgressDialog(GroupList.this);
+        dlg.setTitle("Please Wait");
+        dlg.setMessage("Loading Groups. Please wait.");
+        dlg.show();
+
         groups = new ArrayList<String>();
         group = new ArrayList<ParseObject>();
+        pgroups = new ArrayList<String>();
+        pgroup = new ArrayList<ParseObject>();
         Bundle extra = getIntent().getExtras();
-        String user = extra.getString("username");
+        final String user = extra.getString("username");
+        System.out.println(user);
 
-        final GroupList a = this;
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Groups");
         query.whereEqualTo("UserID", user);
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -58,6 +69,42 @@ public class GroupList extends ActionBarActivity {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                             ParseObject item = group.get(position);
+                            Intent intent = new Intent(getApplicationContext(), GroupsListActivity.class)
+                                    .putExtra("GroupID", item.getString("GroupID"))
+                                    .putExtra("GroupName", item.getString("GroupName"));
+                            startActivity(intent);
+                        }
+                    });
+                    findPending(user);
+                }
+            }
+        });
+        dlg.dismiss();
+    }
+
+    public void findPending(String user) {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Invite");
+        query.whereEqualTo("invited", user);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject a : parseObjects) {
+                        String add = (String) a.get("GroupName");
+                        System.out.println(a.get("GroupName"));
+                        pgroups.add(add);
+                        pgroup.add(a);
+                    } //hi dan
+
+                    ListView lv = (ListView) findViewById(R.id.pending_groups);
+                    ListAdapter adapt = new ArrayAdapter<String>(
+                            a , android.R.layout.simple_list_item_1, pgroups);
+
+                    lv.setAdapter(adapt);
+                    lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        @Override
+                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                            ParseObject item = pgroup.get(position);
                             Intent intent = new Intent(getApplicationContext(), GroupsListActivity.class)
                                     .putExtra("GroupID", item.getString("GroupID"))
                                     .putExtra("GroupName", item.getString("GroupName"));

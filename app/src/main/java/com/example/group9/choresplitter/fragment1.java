@@ -59,7 +59,6 @@ public class fragment1 extends Fragment {
                 Intent intent = new Intent(getActivity(), Addmember.class);
                 intent.putExtra("GID", id).putExtra("name", mac.getGroupname());
                 startActivity(intent);
-                getActivity().finish();
             }
         });
 
