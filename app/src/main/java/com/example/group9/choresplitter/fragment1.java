@@ -69,8 +69,16 @@ public class fragment1 extends Fragment {
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if (e == null) {
                     for (ParseObject a : parseObjects) {
-                        userList.add((String) a.get("UserID"));
-                        userpoints.add((Integer) a.get("Points"));
+                        List<String> allusers = new ArrayList<String>();
+                        allusers = (ArrayList<String>) a.get("Users");
+                        List<String> upoints = new ArrayList<String>();
+                        upoints = (ArrayList<String>) a.get("points");
+                        for (String b: allusers) {
+                            userList.add(b);
+                        }
+                        for (String c: upoints) {
+                            userpoints.add(Integer.parseInt(c));
+                        }
                     }
                     populateListView();
                 }
