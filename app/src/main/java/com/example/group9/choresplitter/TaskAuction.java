@@ -16,14 +16,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 
 public class TaskAuction extends ActionBarActivity {
 
-    private ArrayList<Member> bidders;
+    private ArrayList<Bidder> bidders;
     private boolean completed;
     TextView auctionTimeRemainingText;
 
@@ -89,19 +96,22 @@ public class TaskAuction extends ActionBarActivity {
         timer.start();
 
         //TODO: get list of bidders from elsewhere
-        bidders = new ArrayList<Member>();
+        bidders = new ArrayList<Bidder>();
+        /*
         bidders.add(new Member("kevin"));
         bidders.add(new Member("dan"));
         bidders.add(new Member("andrew"));
         bidders.add(new Member("kevin"));
+        */
 
         populateListView();
+        updateMembers();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
     private void populateListView() {
         //Build adapter
-        ArrayAdapter<Member> adapter = new AuctionListAdapter();
+        ArrayAdapter<Bidder> adapter = new AuctionListAdapter();
 
         //Configure list view
         ListView list = (ListView) findViewById(R.id.auction_bid_list_view);
@@ -109,7 +119,7 @@ public class TaskAuction extends ActionBarActivity {
     }
 
     //Array Adapter used to create the member list
-    private class AuctionListAdapter extends ArrayAdapter<Member> {
+    private class AuctionListAdapter extends ArrayAdapter<Bidder> {
         public AuctionListAdapter() {
             super(getApplicationContext(), R.layout.auction_bid_list_view, bidders);
         }
@@ -124,14 +134,14 @@ public class TaskAuction extends ActionBarActivity {
             }
 
             //Find member list item to work with
-            Member currentItem = bidders.get(position);
+            Bidder currentItem = bidders.get(position);
 
             //Fill view
             TextView nameText = (TextView) itemView.findViewById(R.id.member_name_field);
-            nameText.setText(currentItem.getName());
+            nameText.setText(currentItem.getMember().getName());
 
             TextView pointsText = (TextView) itemView.findViewById(R.id.member_points_field);
-            pointsText.setText(currentItem.getPoints() + "");
+            pointsText.setText(currentItem.getBid() + "");
 
             return itemView;
         }
@@ -172,22 +182,60 @@ public class TaskAuction extends ActionBarActivity {
 
     public void setBid(View view) {
         EditText auctionBidField = (EditText) findViewById(R.id.auction_bid_field);
-       //int bid = (int) Integer.parseInt(auctionBidField.getText().toString());
+       int bid = (int) Integer.parseInt(auctionBidField.getText().toString());
 
         if (completed) {
             Toast.makeText(getApplicationContext(), "Auction is closed.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        /* Check that bid is valid
-        for (Member m : bidders) {
-            if (bid <= )
-        }
-        */
 
-        bidders.add(0, new Member("bidder"));
+        if (bidders.size() > 0) {
+            //Check that the bid is a valid bid
+            if (bid >= bidders.get(0).getBid()) {
+                //invalid bid
+                //Bid must be > lowest bid
+                Toast.makeText(getApplicationContext(), "Must bid lower than lowest bid.", Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+
+        if (bid < 1) {
+            Toast.makeText(getApplicationContext(), "Cannot bid lower than 1.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (bid == 1) {
+            //notify that this will be buyout
+        }
+
+
+        //bidders.add(0, new Member("bidder"));
         populateListView();
     }
+
+    private void updateMembers() {
+
+    }
+
+    private class Bidder {
+        private Member member;
+        private int bid;
+
+        public Bidder(Member m, int b) {
+            member = m;
+            bid = b;
+        }
+
+        public Member getMember() {
+            return member;
+        }
+
+        public int getBid() {
+            return bid;
+        }
+    }
+
 
 
     @Override
@@ -211,5 +259,6 @@ public class TaskAuction extends ActionBarActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
 
 }

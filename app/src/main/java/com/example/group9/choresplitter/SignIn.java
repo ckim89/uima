@@ -30,6 +30,10 @@ public class SignIn extends ActionBarActivity {
     Button signup;
     Button signin;
 
+    //TODO: must have code that creates the members list from list of members already in database
+    //TODO: and also have code that updates this in each activity when needed
+    public static List<Member> members;
+
     //TODO: delete the initialize array code
     //I store and create the arrays that hold people here because the onCreate is only called
     //once in the program.
@@ -145,6 +149,10 @@ public class SignIn extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    private void updateMembers() {
+        //TODO: code should update static field members here
     }
 
 

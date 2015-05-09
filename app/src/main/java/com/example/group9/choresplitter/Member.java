@@ -8,9 +8,8 @@ import java.util.Random;
  * Created by andrewding on 4/20/15.
  */
 public class Member {
-    private double userId;
 
-    private String name;
+    private String userName;
     private int points;
     private double completionRate;
     private double freeloaderRate;
@@ -20,12 +19,9 @@ public class Member {
     private List<Task> approvedTasks;
     private List<Task> disputedTasks;
 
-    //TODO: uh how do i associate picture with member?
 
-    public Member(String n) {
-        Random rand = new Random();
-        userId = rand.nextLong();
-        name = n;
+    public Member(String u) {
+        userName = u;
         points = 0;
         completionRate = 0;
         freeloaderRate = 0;
@@ -36,12 +32,8 @@ public class Member {
         disputedTasks = new ArrayList<Task>();
     }
 
-    public double getUserId() {
-        return userId;
-    }
-
-    public String getName() {
-        return name;
+    public String getUserName() {
+        return userName;
     }
 
     public int getPoints() {
@@ -71,4 +63,16 @@ public class Member {
     public List<Task> getDisputedTasks() {
         return disputedTasks;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Member member = (Member) o;
+
+        return userName.equals(member.userName);
+
+    }
+
 }
