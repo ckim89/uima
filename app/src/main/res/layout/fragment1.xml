@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="left"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -22,14 +23,15 @@
             android:layout_marginRight="10dp" />
         <EditText
             android:id="@+id/group_name_field"
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="Enter Group Name"
-            android:textSize="15dp"/>
+            android:textSize="15dp"
+            android:layout_weight="0.27" />
         <Button
-            android:layout_width="10dp"
-            android:layout_height="10dp"
-            android:text="Invite Members"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invite!"
             android:id="@+id/inviteMember" />
     </LinearLayout>
 
@@ -38,7 +40,8 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="left"
-        android:layout_marginTop="5dp">
+        android:layout_marginTop="5dp"
+        android:weightSum="1">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +54,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Date Here"
-            android:textSize="15dp"/>
+            android:textSize="15dp"
+            android:layout_weight="0.84" />
 
         <Button
             android:layout_width="wrap_content"
@@ -79,7 +83,7 @@
             android:id="@+id/message_field"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:hint="Enter Group Name"
+            android:hint="Put Loser Message"
             android:textSize="15dp"
             />
         <ImageButton
