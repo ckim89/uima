@@ -138,7 +138,7 @@ public class TaskAuction extends ActionBarActivity {
 
             //Fill view
             TextView nameText = (TextView) itemView.findViewById(R.id.member_name_field);
-            nameText.setText(currentItem.getMember().getName());
+            nameText.setText(currentItem.getMember().getUserName());
 
             TextView pointsText = (TextView) itemView.findViewById(R.id.member_points_field);
             pointsText.setText(currentItem.getBid() + "");

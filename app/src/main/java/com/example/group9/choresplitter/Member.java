@@ -20,15 +20,14 @@ public class Member {
     private List<Task> disputedTasks;
 
 
-    public Member(String u) {
+    public Member(String u, int p) {
         userName = u;
-        points = 0;
+        points = p;
         completionRate = 0;
         freeloaderRate = 0;
 
         claimedTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
-        approvedTasks = new ArrayList<Task>();
         disputedTasks = new ArrayList<Task>();
     }
 
@@ -54,10 +53,6 @@ public class Member {
 
     public List<Task> getCompletedTasks() {
         return completedTasks;
-    }
-
-    public List<Task> getApprovedTasks() {
-        return approvedTasks;
     }
 
     public List<Task> getDisputedTasks() {

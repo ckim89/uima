@@ -42,13 +42,8 @@ public class fragment1 extends Fragment {
     List<Pair> memPair;
     Button invite;
 
-    //to get current user name
-    final ParseUser currentUser = ParseUser.getCurrentUser();
-    currentUser.get("username");
-    String currentUserName = currentUser.getUsername();
 
-    //TODO: have a field that represents current member
-    public static Member currentMember;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {

@@ -67,11 +67,12 @@ public class SignIn extends ActionBarActivity {
         unclaimedTasks = new ArrayList<Task>();
         pendingTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
-        initializeListView();
+        //initializeListView();
 
     }
 
     private void initializeListView() {
+
         unclaimedTasks.add(new Task("Task 1", 3));
         unclaimedTasks.add(new Task("Task 2", 5));
         unclaimedTasks.add(new Task("Task 3", 9));
@@ -86,6 +87,7 @@ public class SignIn extends ActionBarActivity {
         completedTasks.add(new Task("Task 36", 5));
         completedTasks.add(new Task("Task 37", 1));
         completedTasks.add(new Task("Task 38", 2));
+
     }
 
     public void signup() {

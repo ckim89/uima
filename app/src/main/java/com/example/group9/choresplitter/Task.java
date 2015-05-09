@@ -1,6 +1,7 @@
 package com.example.group9.choresplitter;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -10,12 +11,17 @@ import java.util.Calendar;
 @SuppressWarnings("serial")
 public class Task implements Serializable{
     private String name;
+    private String id;
     private int points;
     private MyDate dateCreated;
+    private int upVotes;
+    private int allUsers;
+    private ArrayList<String> approval;
 
     public Task(String n, int p) {
         name = n;
         points = p;
+        approval = new ArrayList<String>();
     }
 
     public void createNow() {
@@ -39,8 +45,26 @@ public class Task implements Serializable{
         points = p;
     }
 
+    public void setId(String a) {
+        id = a;
+    }
+
+    public void setUpVotes(int p) {
+        upVotes = p;
+    }
+
+    public void setAllUsers(int a) {
+        allUsers = a;
+    }
+
     public void print() {
         System.out.println(name + " " + points);
+    }
+
+    public void approvedBy(String m) {
+        if (!approval.contains(m)) {
+            approval.add(m);
+        }
     }
 
     public String getName() {
@@ -53,6 +77,28 @@ public class Task implements Serializable{
 
     public MyDate getDateCreated() {
         return dateCreated;
+    }
+
+    public ArrayList<String> getApprovedBy() {
+        return approval;
+    }
+
+    public int getUpVotes() {
+        return upVotes;
+    }
+
+    public int getAllUsers() {
+        return allUsers;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void removeUser(String u) {
+        if (approval.contains(u)) {
+            approval.remove(u);
+        }
     }
 
 }
