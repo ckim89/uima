@@ -17,6 +17,7 @@ import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,12 +49,16 @@ public class GroupList extends ActionBarActivity {
         final String user = extra.getString("username");
         System.out.println(user);
 
+        final ParseUser u = ParseUser.getCurrentUser();
+        groups = (ArrayList<String>) u.get("Groups");
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Groups");
-        query.whereEqualTo("UserID", user);
+        query.whereContainedIn("GroupID", groups);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if (e == null) {
+                    groups.clear();
                     for (ParseObject a : parseObjects) {
                         String add = (String) a.get("GroupName");
                         groups.add(add);
