@@ -3,6 +3,8 @@ package com.example.group9.choresplitter;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,6 +20,7 @@ import android.widget.TextView;
 import com.parse.FindCallback;
 import com.parse.Parse;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
@@ -143,7 +146,29 @@ public class fragment1 extends Fragment {
 
             //Fill view
             ImageView imageView = (ImageView) itemView.findViewById(R.id.member_image_view);
-            imageView.setImageResource(currentItem.getImageId());
+            ParseQuery<ParseUser> query = ParseUser.getQuery();
+            ParseQuery<ParseUser> userqueries = query.whereEqualTo("username", currentItem.getName());
+            ParseUser user = null;
+            try {
+                user = userqueries.getFirst();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            if (user.getParseFile("picture") != null)
+            {
+                ParseFile file = user.getParseFile("picture");
+                byte[] bitmapdata = new byte[0];
+                try {
+                    bitmapdata = file.getData();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
+                imageView.setImageBitmap(bitmap);
+            }
+            else {
+                imageView.setImageResource(currentItem.getImageId());
+            }
 
             TextView nameText = (TextView) itemView.findViewById(R.id.member_name_field);
             nameText.setText(currentItem.getName());
