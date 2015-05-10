@@ -34,6 +34,7 @@ public class TaskAuction extends ActionBarActivity {
     private ArrayList<Bidder> bidders;
     private boolean completed;
     TextView auctionTimeRemainingText;
+    private String auctionId;
 
     private MyDate currentDate, finishDate;
 
@@ -45,22 +46,11 @@ public class TaskAuction extends ActionBarActivity {
 
         Task thisTask = (Task) getIntent().getSerializableExtra("thisTask");
         MyDate createdDate = thisTask.getDateCreated();
-
-        int createdDay = 122;
-        int createdHour = 20;
-        int createdMinute = 59;
-        int createdSecond = 59;
+        Bundle extras = getIntent().getExtras();
+        auctionId = extras.getString("TaskId");
 
         //TODO: get auction duration from elsewhere
         int auctionDurationHours = 24;
-
-        //Create the finishing MyDate based on creation date and auction duration
-        /*
-        finishDate = new MyDate(createdDay + (auctionDurationHours / 24),
-                                createdHour,
-                                createdMinute,
-                                createdSecond);
-        */
 
         finishDate = new MyDate(createdDate.getDay() + (auctionDurationHours / 24),
                                 createdDate.getHour(),
@@ -69,13 +59,6 @@ public class TaskAuction extends ActionBarActivity {
 
         //Get the current MyDate
         currentDate = getCurrentDate();
-
-        /*
-        System.out.print("currentDate: ");
-        currentDate.print();
-        System.out.print("finishDate: ");
-        finishDate.print();
-        */
 
         //Calculate days remaining
         int daysLeft = finishDate.getDay() - currentDate.getDay();
@@ -96,12 +79,31 @@ public class TaskAuction extends ActionBarActivity {
 
         //TODO: get list of bidders from elsewhere
         bidders = new ArrayList<Bidder>();
-        /*
-        bidders.add(new Member("kevin"));
-        bidders.add(new Member("dan"));
-        bidders.add(new Member("andrew"));
-        bidders.add(new Member("kevin"));
-        */
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("AuctionBids");
+        query.whereEqualTo("groupID", GroupsListActivity.GID);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            ArrayList<String> bidders;
+            ArrayList<String> bidderPoints;
+            ArrayList<String> bidderTimestamp;
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject a : parseObjects) {
+                        if (a.get("auctionId").equals(auctionId)) {
+                            bidders = (ArrayList<String>) a.get("bidders");
+                            bidderPoints = (ArrayList<String>) a.get("bidderPoints");
+                            bidderTimestamp = (ArrayList<String>) a.get("bidderTimestamp");
+                        }
+                    }
+
+                    for (int i = 0; i < bidders.size(); i++) {
+                        System.out.println(bidders.get(i) + " " + bidderPoints.get(i) + " " + bidderTimestamp.get(i));
+                    }
+                }
+            }
+
+        });
+
 
         populateListView();
         updateMembers();
@@ -137,7 +139,7 @@ public class TaskAuction extends ActionBarActivity {
 
             //Fill view
             TextView nameText = (TextView) itemView.findViewById(R.id.member_name_field);
-            nameText.setText(currentItem.getMember().getUserName());
+            nameText.setText(currentItem.getMember());
 
             TextView pointsText = (TextView) itemView.findViewById(R.id.member_points_field);
             pointsText.setText(currentItem.getBid() + "");
@@ -218,20 +220,26 @@ public class TaskAuction extends ActionBarActivity {
     }
 
     private class Bidder {
-        private Member member;
+        private String member;
         private int bid;
+        private String timestamp;
 
-        public Bidder(Member m, int b) {
+        public Bidder(String m, int b, String t) {
             member = m;
             bid = b;
+            timestamp = t;
         }
 
-        public Member getMember() {
+        public String getMember() {
             return member;
         }
 
         public int getBid() {
             return bid;
+        }
+
+        public String getTimestamp() {
+            return timestamp;
         }
     }
 

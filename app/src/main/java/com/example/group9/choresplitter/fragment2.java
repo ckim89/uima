@@ -269,12 +269,9 @@ public class fragment2 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
                 Task clickedItem = unclaimedTasks.get(position);
-                /*
-                String message = "You clicked position " + position + ", which is " + clickedItem.getName();
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                */
                 Intent intent = new Intent(getActivity(), TaskAuction.class);
                 intent.putExtra("thisTask", clickedItem);
+                intent.putExtra("taskId", clickedItem.getId()); //TODO: get task id
                 startActivity(intent);
             }
         });
@@ -353,6 +350,7 @@ public class fragment2 extends Fragment {
                 }
 
             });
+            refresh();
         } else { //adding a vote
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
             query.whereEqualTo("taskID", curid);
@@ -368,6 +366,7 @@ public class fragment2 extends Fragment {
                 }
 
             });
+            refresh();
         }
 
         /*
@@ -431,6 +430,7 @@ public class fragment2 extends Fragment {
                 }
 
             });
+            refresh();
         } else {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
             query.whereEqualTo("taskID", curid);
@@ -446,6 +446,7 @@ public class fragment2 extends Fragment {
                 }
 
             });
+            refresh();
         }
 
         //pendingTasks.remove(currentTask);
@@ -520,9 +521,18 @@ public class fragment2 extends Fragment {
                 }
 
             });
-
         }
+        refresh();
         //completedTasks.remove(currentTask);
         populateListView();
+    }
+
+    public void refresh() {
+        Fragment frg = null;
+        frg = getActivity().getSupportFragmentManager().findFragmentById(R.id.fr1);
+        final android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commit();
     }
 }
