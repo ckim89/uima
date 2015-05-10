@@ -11,5 +11,7 @@
     <string name="title_activity_sign_in">SignIn</string>
     <string name="title_activity_group_list">GroupList</string>
     <string name="title_activity_addmember">Addmember</string>
+    <string name="title_activity_addgroup">Add Group</string>
+    <string name="title_activity_addtask">Add Task</string>
     <string name="title_activity_task_auction">TaskAuction</string>
 </resources>

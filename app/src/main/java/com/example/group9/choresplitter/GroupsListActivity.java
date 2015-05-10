@@ -1,6 +1,5 @@
 package com.example.group9.choresplitter;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
@@ -11,16 +10,12 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
-import com.parse.ParseUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +31,7 @@ public class GroupsListActivity extends ActionBarActivity {
 
     fragment1 f1;
     fragment2 f2;
+    boolean visibleFragment;
 
     List<Member> members;
 
@@ -55,6 +51,7 @@ public class GroupsListActivity extends ActionBarActivity {
         B2 = (Button) findViewById(R.id.button2);
         H1 = (TextView) findViewById(R.id.highlight1);
         H2 = (TextView) findViewById(R.id.highlight2);
+        visibleFragment = true;
 
         if (getSupportFragmentManager().findFragmentById(R.id.fr1) != null) {
             getSupportFragmentManager().beginTransaction().
@@ -90,11 +87,17 @@ public class GroupsListActivity extends ActionBarActivity {
                 startActivity(intent);
                 return true;
             case R.id.add_member:
-                final GroupsListActivity mac = (GroupsListActivity) this;
-                final String id = mac.getGroupID();
-                Intent intent2 = new Intent(this, Addmember.class);
-                intent2.putExtra("GID", id).putExtra("name", mac.getGroupname());
-                startActivity(intent2);
+                if (visibleFragment == true) {
+                    final GroupsListActivity mac = (GroupsListActivity) this;
+                    final String id = mac.getGroupID();
+                    Intent intent2 = new Intent(this, AddMember.class);
+                    intent2.putExtra("GID", id).putExtra("name", mac.getGroupname());
+                    startActivity(intent2);
+                }
+                else {
+                    Intent intent2 = new Intent(this, AddTask.class);
+                    startActivity(intent2);
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -107,6 +110,7 @@ public class GroupsListActivity extends ActionBarActivity {
                 H1.setBackgroundColor(Color.parseColor("#FF9999"));
                 H2.setBackgroundColor(Color.parseColor("#EAEAEA"));
                 f1 = new fragment1();
+                visibleFragment = true;
                 if (getSupportFragmentManager().findFragmentById(R.id.fr1) != null) {
                     getSupportFragmentManager().beginTransaction().
                             remove(getSupportFragmentManager().findFragmentById(R.id.fr1)).commit();
@@ -123,6 +127,7 @@ public class GroupsListActivity extends ActionBarActivity {
                 H1.setBackgroundColor(Color.parseColor("#EAEAEA"));
                 H2.setBackgroundColor(Color.parseColor("#FF9999"));
                 f2 = new fragment2();
+                visibleFragment = false;
                 if (getSupportFragmentManager().findFragmentById(R.id.fr1) != null) {
                     getSupportFragmentManager().beginTransaction().
                             remove(getSupportFragmentManager().findFragmentById(R.id.fr1)).commit();
