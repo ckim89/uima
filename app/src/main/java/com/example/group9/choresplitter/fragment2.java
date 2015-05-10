@@ -34,9 +34,9 @@ public class fragment2 extends Fragment {
     int numApproval;
     int numMembers;
 
-    //TODO: swap comments. the static is just for testing purposes
-    private static List<Task> unclaimedTasks, pendingTasks, completedTasks;
-    //private List<Task> unclaimedTasks, pendingTasks, completedTasks;
+
+    //private static List<Task> unclaimedTasks, pendingTasks, completedTasks;
+    private List<Task> unclaimedTasks, pendingTasks, completedTasks;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,21 +45,12 @@ public class fragment2 extends Fragment {
         dlg.setMessage("Signing up. Please wait.");
         dlg.show();
         rootView = inflater.inflate(R.layout.fragment2, container, false);
-        unclaimedChoresListView = inflater.inflate(R.layout.unclaimed_chores_list_view, container, false);
+        //unclaimedChoresListView = inflater.inflate(R.layout.unclaimed_chores_list_view, container, false);
         context = rootView.getContext();
 
         unclaimedTasks = new ArrayList<Task>();
         pendingTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
-
-        /*
-        unclaimedTasks = new ArrayList<Task>();
-        pendingTasks = new ArrayList<Task>();
-        completedTasks = new ArrayList<Task>();
-
-
-        initializeListView();
-        */
 
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
@@ -69,20 +60,46 @@ public class fragment2 extends Fragment {
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if (e == null) {
                     for (ParseObject a : parseObjects) {
-                        //TODO: get task fields from add task window
-                        Task newTask = new Task((String) a.get("Name"), -1);
-                        newTask.setId((String) a.get("taskID"));
                         if (a.get("status").equals("pending")) {
-                            for (String b: (ArrayList<String>) a.get("approved")) {
-                                newTask.approvedBy(b);
-                                newTask.setUpVotes(newTask.getUpVotes() + 1);
+                            Task newTask = new Task((String) a.get("Name"), -1);
+                            newTask.setId((String) a.get("taskID"));
+                            ArrayList<String> approvedList = (ArrayList<String>) a.get("approved");
+                            if (approvedList != null) {
+                                for (String b: approvedList) {
+                                    newTask.approvedBy(b);
+                                    newTask.setUpVotes(newTask.getUpVotes() + 1);
+                                }
                             }
                             newTask.setAllUsers((int) a.get("nummems"));
                             pendingTasks.add(newTask);
-                        } else if (a.get("status").equals("claimed")) {
-                            unclaimedTasks.add(newTask);
+                        } else if (a.get("status").equals("unclaimed")) {
+                            Task newTask = new Task((String) a.get("Name"), -1);
+                            newTask.setId((String) a.get("taskID"));
+                            ArrayList<String> approvedList = (ArrayList<String>) a.get("approved");
+                            if (approvedList != null) {
+                                for (String b : (ArrayList<String>) a.get("approved")) {
+                                    newTask.approvedBy(b);
+                                    newTask.setUpVotes(newTask.getUpVotes() + 1);
+                                }
+                            }
+                            newTask.setAllUsers((int) a.get("nummems"));
+                            if (newTask.getUpVotes() != newTask.getAllUsers()) {
+                                unclaimedTasks.add(newTask);
+                            }
+                            //TODO: currently doesn't add unclaimed task if has 4 votes, but also needs to
+                            //TODO: remove from parse
                         } else if (a.get("status").equals("completed")) {
-                            newTask.setPoints((int) a.get("Points"));
+                            //TODO: get num points to set task to from auction shitballs
+                            Task newTask = new Task((String) a.get("Name"), -1);
+                            newTask.setId((String) a.get("taskID"));
+                            ArrayList<String> approvedList = (ArrayList<String>) a.get("approved");
+                            if (approvedList != null) {
+                                for (String b : (ArrayList<String>) a.get("approved")) {
+                                    newTask.approvedBy(b);
+                                    newTask.setUpVotes(newTask.getUpVotes() + 1);
+                                }
+                            }
+                            newTask.setAllUsers((int) a.get("nummems"));
                             completedTasks.add(newTask);
                         }
                     }
@@ -97,26 +114,10 @@ public class fragment2 extends Fragment {
 
         return rootView;
     }
-/*
-    private void initializeListView() {
-        unclaimedTasks.add(new Task("Task 1", 3));
-        unclaimedTasks.add(new Task("Task 2", 5));
-        unclaimedTasks.add(new Task("Task 3", 9));
-        unclaimedTasks.add(new Task("Task 4", 2));
-
-        pendingTasks.add(new Task("Task 12", 4));
-        pendingTasks.add(new Task("Task 13", 3));
-        pendingTasks.add(new Task("Task 14", 10));
-        pendingTasks.add(new Task("Task 15", 8));
-
-        completedTasks.add(new Task("Task 35", 8));
-        completedTasks.add(new Task("Task 36", 5));
-        completedTasks.add(new Task("Task 37", 1));
-        completedTasks.add(new Task("Task 38", 2));
-    }
-    */
 
     private void populateListView() {
+
+        System.out.println(unclaimedTasks.size());
         //Build adapter
         ArrayAdapter<Task> adapter = new UnclaimedTaskListAdapter();
         //Configure list view
@@ -144,15 +145,23 @@ public class fragment2 extends Fragment {
             if (itemView == null) {
                 itemView = getActivity().getLayoutInflater().inflate(R.layout.unclaimed_chores_list_view, parent, false);
             }
+
             //Find member list item to work with
             Task currentItem = unclaimedTasks.get(position);
             //Fill View
             TextView unclaimedTaskNameText = (TextView) itemView.findViewById(R.id.unclaimed_task_name);
             unclaimedTaskNameText.setText(currentItem.getName());
             TextView unclaimedNumberPointsText = (TextView) itemView.findViewById(R.id.unclaimed_number_points);
-            unclaimedNumberPointsText.setText(currentItem.getPoints() + "");
+            String a = "";
+            for (String s : currentItem.getApprovedBy()) {
+                a += s + ", ";
+            }
+            if (currentItem.getApprovedBy().size() >= 1) {
+                a = a.substring(0, a.length() - 2);
+            }
+            unclaimedNumberPointsText.setText(a);
             TextView UnclaimedCancelText = (TextView) itemView.findViewById(R.id.unclaimed_cancel);
-            UnclaimedCancelText.setText("0/4");
+            UnclaimedCancelText.setText(currentItem.getUpVotes() + "/" + currentItem.getAllUsers());
 
             return itemView;
         }
@@ -209,9 +218,16 @@ public class fragment2 extends Fragment {
             TextView completedTaskNameText = (TextView) itemView.findViewById(R.id.completed_task_name);
             completedTaskNameText.setText(currentItem.getName());
             TextView completedNumberPointsText = (TextView) itemView.findViewById(R.id.completed_number_points);
-            completedNumberPointsText.setText(currentItem.getPoints() + "");
+            String a = "";
+            for (String s : currentItem.getApprovedBy()) {
+                a += s + ", ";
+            }
+            if (currentItem.getApprovedBy().size() >= 1) {
+                a = a.substring(0, a.length() - 2);
+            }
+            completedNumberPointsText.setText(a);
             TextView disputeCountText = (TextView) itemView.findViewById(R.id.dispute_count);
-            disputeCountText.setText("0/4");
+            disputeCountText.setText(currentItem.getUpVotes() + "/" + currentItem.getAllUsers());
 
             return itemView;
         }
@@ -264,17 +280,73 @@ public class fragment2 extends Fragment {
         //These two lines get the position that the button is in
         ListView temp = (ListView) clickedRow.getParent();
         int position = temp.getPositionForView(view);
+        final Task currentTask = unclaimedTasks.get(position);
 
         TextView taskName = (TextView) tempRow.getChildAt(0);
         TextView numPoints = (TextView) tempRow.getChildAt(1);
         TextView cancelVote = (TextView) clickedRow.getChildAt(1);
 
+        /*
         String message = "Pressed " + taskName.getText().toString() +
                 " , which has " + numPoints.getText().toString() +
                 " points and " + cancelVote.getText().toString() + " cancel votes.";
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        */
 
-        unclaimedTasks.remove(view);
+        ArrayList<String>cancelUsers = currentTask.getApprovedBy();
+        String curid = currentTask.getId();
+        ParseUser u = ParseUser.getCurrentUser();
+        final String username = u.getUsername();
+        if (cancelUsers.contains(username)) {
+            currentTask.removeUser(username);
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
+            query.whereEqualTo("taskID", curid);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null) {
+                        for (ParseObject a : parseObjects) {
+                            List<String> b = new ArrayList<String>();
+                            b = (ArrayList<String>) a.get("approved");
+                            ArrayList<String> temp = new ArrayList<String>(b);
+                            a.remove("approved");
+                            for (String c : b) {
+                                if (c.equals(username)) { //undoing a vote
+                                    temp.remove(c);
+                                }
+                            }
+                            b = temp;
+                            for (String c : b) {
+                                a.add("approved", c);
+                            }
+                            a.saveInBackground();
+                        }
+                    }
+                }
+
+            });
+        } else { //adding a vote
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
+            query.whereEqualTo("taskID", curid);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null) {
+                        for (ParseObject a : parseObjects) {
+                            a.add("approved", username);
+                            a.saveInBackground();
+                        }
+                    }
+                }
+
+            });
+        }
+
+        /*
+        if (currentTask.getUpVotes() == 0) {
+            unclaimedTasks.remove(currentTask);
+        }
+        */
         populateListView();
     }
 
@@ -292,19 +364,18 @@ public class fragment2 extends Fragment {
         TextView numPoints = (TextView) tempRow.getChildAt(1);
         TextView cancelVote = (TextView) clickedRow.getChildAt(1);
 
+        /*
         String message = "Pressed " + taskName.getText().toString() +
                 " , which has " + numPoints.getText().toString() +
                 " points and " + cancelVote.getText().toString() + " approval votes.";
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-
-        //TODO: uncomment and implement this code
+        */
 
         ArrayList<String> approvedUsers = currentTask.getApprovedBy();
         String curid = currentTask.getId();
         ParseUser u = ParseUser.getCurrentUser();
         final String username = u.getUsername();
         if (approvedUsers.contains(username)) {
-            Toast.makeText(context, "You have already upvoted!", Toast.LENGTH_SHORT).show();
             currentTask.removeUser(username);
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
             query.whereEqualTo("taskID", curid);
@@ -315,12 +386,14 @@ public class fragment2 extends Fragment {
                         for (ParseObject a : parseObjects) {
                             List<String> b = new ArrayList<String>();
                             b = (ArrayList<String>) a.get("approved");
+                            ArrayList<String> temp = new ArrayList<String>(b);
                             a.remove("approved");
                             for (String c : b) {
                                 if (c.equals(username)) {
-                                    b.remove(c);
+                                    temp.remove(c);
                                 }
                             }
+                            b = temp;
                             for (String c : b) {
                                 a.add("approved", c);
                             }
@@ -346,29 +419,8 @@ public class fragment2 extends Fragment {
 
             });
         }
-        //get member id for current user
-        /*
-        if member.getApprovedTasks.contains(currentTask) {
-            currentTask.incrementPoints();
-            numPoints.setText(currentTask.getPoints()); //Does this need to be string?
-            //set thumb to less vibrant shade of green
-        } else {
-            currentTask.decrementPoints();
-            numPoints.setText(currentTask.getPoints()); //Does this need to be string?
-            //set thumb to original shade of green
-        }
 
-        if (currentTask.getPoints == number of members in group) {
-            pendingTasks.remove(currentTask);
-        }
-        */
-
-
-        pendingTasks.remove(currentTask);
-        for (Task t : pendingTasks) {
-            t.print();
-        }
-
+        //pendingTasks.remove(currentTask);
         populateListView();
     }
 
@@ -380,18 +432,69 @@ public class fragment2 extends Fragment {
         //These two lines get the position that the button is in
         ListView temp = (ListView) clickedRow.getParent();
         int position = temp.getPositionForView(view);
+        Task currentTask = completedTasks.get(position);
 
 
         TextView taskName = (TextView) tempRow.getChildAt(0);
         TextView numPoints = (TextView) tempRow.getChildAt(1);
         TextView cancelVote = (TextView) clickedRow.getChildAt(1);
-
+        /*
         String message = "Pressed " + taskName.getText().toString() +
                 " , which has " + numPoints.getText().toString() +
                 " points and " + cancelVote.getText().toString() + " cancel votes.";
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+        */
 
-        completedTasks.remove(view);
+        ArrayList<String> disputeUsers = currentTask.getApprovedBy();
+        String curid = currentTask.getId();
+        ParseUser u = ParseUser.getCurrentUser();
+        final String username = u.getUsername();
+        if (disputeUsers.contains(username)) {
+            currentTask.removeUser(username);
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
+            query.whereEqualTo("taskID", curid);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null) {
+                        for (ParseObject a : parseObjects) {
+                            List<String> b = new ArrayList<String>();
+                            b = (ArrayList<String>) a.get("approved");
+                            ArrayList<String> temp = new ArrayList<String>(b);
+                            a.remove("approved");
+                            for (String c : b) {
+                                if (c.equals(username)) { //undoing a vote
+                                    temp.remove(c);
+                                }
+                            }
+                            b = temp;
+                            for (String c : b) {
+                                a.add("approved", c);
+                            }
+                            a.saveInBackground();
+                        }
+                    }
+                }
+
+            });
+        } else {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
+            query.whereEqualTo("taskID", curid);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null) {
+                        for (ParseObject a : parseObjects) {
+                            a.add("approved", username);
+                            a.saveInBackground();
+                        }
+                    }
+                }
+
+            });
+
+        }
+        //completedTasks.remove(currentTask);
         populateListView();
     }
 }

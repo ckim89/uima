@@ -11,8 +11,6 @@ public class Member {
 
     private String userName;
     private int points;
-    private double completionRate;
-    private double freeloaderRate;
 
     private List<Task> claimedTasks;
     private List<Task> completedTasks;
@@ -23,8 +21,6 @@ public class Member {
     public Member(String u, int p) {
         userName = u;
         points = p;
-        completionRate = 0;
-        freeloaderRate = 0;
 
         claimedTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
@@ -37,14 +33,6 @@ public class Member {
 
     public int getPoints() {
         return points;
-    }
-
-    public double getCompletionRate() {
-        return completionRate;
-    }
-
-    public double getFreeloaderRate() {
-        return freeloaderRate;
     }
 
     public List<Task> getClaimedTasks() {
