@@ -4,4 +4,6 @@
     tools:context="com.example.group9.choresplitter.GroupList">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/credits" android:title="@string/credits"
+        android:orderInCategory="100" app:showAsAction="never" />
 </menu>
