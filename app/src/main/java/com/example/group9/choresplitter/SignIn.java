@@ -30,6 +30,10 @@ public class SignIn extends ActionBarActivity {
     Button signup;
     Button signin;
 
+    //TODO: must have code that creates the members list from list of members already in database
+    //TODO: and also have code that updates this in each activity when needed
+    public static List<Member> members;
+
     //TODO: delete the initialize array code
     //I store and create the arrays that hold people here because the onCreate is only called
     //once in the program.
@@ -63,11 +67,12 @@ public class SignIn extends ActionBarActivity {
         unclaimedTasks = new ArrayList<Task>();
         pendingTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
-        initializeListView();
+        //initializeListView();
 
     }
 
     private void initializeListView() {
+
         unclaimedTasks.add(new Task("Task 1", 3));
         unclaimedTasks.add(new Task("Task 2", 5));
         unclaimedTasks.add(new Task("Task 3", 9));
@@ -82,6 +87,7 @@ public class SignIn extends ActionBarActivity {
         completedTasks.add(new Task("Task 36", 5));
         completedTasks.add(new Task("Task 37", 1));
         completedTasks.add(new Task("Task 38", 2));
+
     }
 
     public void signup() {
@@ -145,6 +151,10 @@ public class SignIn extends ActionBarActivity {
                 }
             }
         });
+    }
+
+    private void updateMembers() {
+        //TODO: code should update static field members here
     }
 
 

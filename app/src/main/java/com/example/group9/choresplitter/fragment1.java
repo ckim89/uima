@@ -42,6 +42,9 @@ public class fragment1 extends Fragment {
     List<Pair> memPair;
     Button invite;
 
+
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final GroupsListActivity mac = (GroupsListActivity) getActivity();
@@ -91,7 +94,6 @@ public class fragment1 extends Fragment {
 
     private void populateListView() {
         //Create list of items
-        //TODO: get member list
         memberList = new ArrayList<MemberListItem>();
         ParseQuery<ParseUser> query1 = ParseUser.getQuery();
         query1.whereContainedIn("username", userList);
@@ -207,6 +209,8 @@ public class fragment1 extends Fragment {
         }
         return sortedList;
     }
+
+
 
     //TODO: added 1 button to add to pending chores
 }

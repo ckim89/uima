@@ -1,5 +1,6 @@
 package com.example.group9.choresplitter;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.support.v7.app.ActionBarActivity;
@@ -15,6 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,11 +31,14 @@ public class GroupsListActivity extends ActionBarActivity {
     Button B1;
     Button B2;
     TextView H1, H2;
-    String GID;
+    static String GID;
     String name;
 
     fragment1 f1;
     fragment2 f2;
+
+    List<Member> members;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +65,9 @@ public class GroupsListActivity extends ActionBarActivity {
                     add(R.id.fr1, f1).commit();
         }
         setButtons();
+
+        members = getMembers();
+
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
@@ -126,6 +139,10 @@ public class GroupsListActivity extends ActionBarActivity {
         TextView loserTextView = (TextView) findViewById(R.id.loser_text_view);
         EditText messageField = (EditText) findViewById(R.id.message_field);
         loserTextView.setText(messageField.getText().toString());
+
+        for (Member m : members) {
+            System.out.println(m.getUserName());
+        }
     }
 
 
@@ -152,5 +169,35 @@ public class GroupsListActivity extends ActionBarActivity {
     public void addPending(View view) {
         //ListView l = (ListView) findViewById(R.id.pending_chores_list_view);
         SignIn.pendingTasks.add(new Task("EUWEH", 1));
+    }
+
+    private ArrayList<Member> getMembers() {
+        /*
+        //to get current user name
+        final ParseUser currentUser = ParseUser.getCurrentUser();
+        //currentUser.get("username");
+        String currentUserName = currentUser.getUsername();
+        */
+        final ArrayList<Member> memlist = new ArrayList<Member>();
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Groups");
+        query.whereEqualTo("GroupID", GID);
+        query.findInBackground(new FindCallback<ParseObject>() {
+
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject a : parseObjects) {
+                        List<String> allusers = new ArrayList<String>();
+                        allusers = (ArrayList<String>) a.get("Users");
+                        List<String> upoints = new ArrayList<String>();
+                        upoints = (ArrayList<String>) a.get("points");
+                        for (int i = 0; i < upoints.size(); i++) {
+                            memlist.add(new Member(allusers.get(i), Integer.parseInt(upoints.get(i))));
+                        }
+                    }
+                }
+            }
+        });
+        return memlist;
     }
 }

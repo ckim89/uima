@@ -1,5 +1,6 @@
 package com.example.group9.choresplitter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +16,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +31,8 @@ import java.util.List;
 public class fragment2 extends Fragment {
     View rootView, unclaimedChoresListView;
     Context context;
+    int numApproval;
+    int numMembers;
 
     //TODO: swap comments. the static is just for testing purposes
     private static List<Task> unclaimedTasks, pendingTasks, completedTasks;
@@ -31,13 +40,17 @@ public class fragment2 extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        final ProgressDialog dlg = new ProgressDialog(getActivity());
+        dlg.setTitle("Please Wait");
+        dlg.setMessage("Signing up. Please wait.");
+        dlg.show();
         rootView = inflater.inflate(R.layout.fragment2, container, false);
         unclaimedChoresListView = inflater.inflate(R.layout.unclaimed_chores_list_view, container, false);
         context = rootView.getContext();
 
-        unclaimedTasks = SignIn.unclaimedTasks;
-        pendingTasks = SignIn.pendingTasks;
-        completedTasks = SignIn.completedTasks;
+        unclaimedTasks = new ArrayList<Task>();
+        pendingTasks = new ArrayList<Task>();
+        completedTasks = new ArrayList<Task>();
 
         /*
         unclaimedTasks = new ArrayList<Task>();
@@ -48,8 +61,39 @@ public class fragment2 extends Fragment {
         initializeListView();
         */
 
-        populateListView();
-        registerClickCallback();
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
+        query.whereEqualTo("groupID", GroupsListActivity.GID);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject a : parseObjects) {
+                        //TODO: get task fields from add task window
+                        Task newTask = new Task((String) a.get("Name"), -1);
+                        newTask.setId((String) a.get("taskID"));
+                        if (a.get("status").equals("pending")) {
+                            for (String b: (ArrayList<String>) a.get("approved")) {
+                                newTask.approvedBy(b);
+                                newTask.setUpVotes(newTask.getUpVotes() + 1);
+                            }
+                            newTask.setAllUsers((int) a.get("nummems"));
+                            pendingTasks.add(newTask);
+                        } else if (a.get("status").equals("claimed")) {
+                            unclaimedTasks.add(newTask);
+                        } else if (a.get("status").equals("completed")) {
+                            newTask.setPoints((int) a.get("Points"));
+                            completedTasks.add(newTask);
+                        }
+                    }
+                    populateListView();
+                    registerClickCallback();
+                }
+            }
+
+        });
+
+        dlg.dismiss();
 
         return rootView;
     }
@@ -132,9 +176,16 @@ public class fragment2 extends Fragment {
             TextView pendingTaskNameText = (TextView) itemView.findViewById(R.id.pending_task_name);
             pendingTaskNameText.setText(currentItem.getName());
             TextView pendingNumberPointsText = (TextView) itemView.findViewById(R.id.pending_number_points);
-            pendingNumberPointsText.setText(currentItem.getPoints() + "");
+            String a = "";
+            for (String s : currentItem.getApprovedBy()) {
+                a += s + ", ";
+            }
+            if (currentItem.getApprovedBy().size() >= 1) {
+                a = a.substring(0, a.length() - 2);
+            }
+            pendingNumberPointsText.setText(a);
             TextView approvedCountText = (TextView) itemView.findViewById(R.id.approved_count);
-            approvedCountText.setText("1/4");
+            approvedCountText.setText(currentItem.getUpVotes() + "/" + currentItem.getAllUsers());
 
             return itemView;
         }
@@ -247,8 +298,56 @@ public class fragment2 extends Fragment {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
         //TODO: uncomment and implement this code
+
+        ArrayList<String> approvedUsers = currentTask.getApprovedBy();
+        String curid = currentTask.getId();
+        ParseUser u = ParseUser.getCurrentUser();
+        final String username = u.getUsername();
+        if (approvedUsers.contains(username)) {
+            Toast.makeText(context, "You have already upvoted!", Toast.LENGTH_SHORT).show();
+            currentTask.removeUser(username);
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
+            query.whereEqualTo("taskID", curid);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null) {
+                        for (ParseObject a : parseObjects) {
+                            List<String> b = new ArrayList<String>();
+                            b = (ArrayList<String>) a.get("approved");
+                            a.remove("approved");
+                            for (String c : b) {
+                                if (c.equals(username)) {
+                                    b.remove(c);
+                                }
+                            }
+                            for (String c : b) {
+                                a.add("approved", c);
+                            }
+                            a.saveInBackground();
+                        }
+                    }
+                }
+
+            });
+        } else {
+            ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
+            query.whereEqualTo("taskID", curid);
+            query.findInBackground(new FindCallback<ParseObject>() {
+                @Override
+                public void done(List<ParseObject> parseObjects, ParseException e) {
+                    if (e == null) {
+                        for (ParseObject a : parseObjects) {
+                            a.add("approved", username);
+                            a.saveInBackground();
+                        }
+                    }
+                }
+
+            });
+        }
+        //get member id for current user
         /*
-        get member id for current user
         if member.getApprovedTasks.contains(currentTask) {
             currentTask.incrementPoints();
             numPoints.setText(currentTask.getPoints()); //Does this need to be string?
@@ -263,6 +362,7 @@ public class fragment2 extends Fragment {
             pendingTasks.remove(currentTask);
         }
         */
+
 
         pendingTasks.remove(currentTask);
         for (Task t : pendingTasks) {
