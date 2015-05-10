@@ -269,12 +269,9 @@ public class fragment2 extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
                 Task clickedItem = unclaimedTasks.get(position);
-                /*
-                String message = "You clicked position " + position + ", which is " + clickedItem.getName();
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                */
                 Intent intent = new Intent(getActivity(), TaskAuction.class);
                 intent.putExtra("thisTask", clickedItem);
+                intent.putExtra("taskId", clickedItem.getId()); //TODO: get task id
                 startActivity(intent);
             }
         });
