@@ -71,7 +71,15 @@ public class fragment2 extends Fragment {
                                 }
                             }
                             newTask.setAllUsers((int) a.get("nummems"));
-                            pendingTasks.add(newTask);
+                            if (newTask.getUpVotes() != newTask.getAllUsers()) {
+                                //TODO: hi dan
+                                pendingTasks.add(newTask);
+                            } else {
+                                //Has 4 pending votes
+                                //TODO: begin the task's timer and move it to unclaimed
+                                unclaimedTasks.add(newTask);
+                                newTask.createNow();
+                            }
                         } else if (a.get("status").equals("unclaimed")) {
                             Task newTask = new Task((String) a.get("Name"), -1);
                             newTask.setId((String) a.get("taskID"));
@@ -84,6 +92,7 @@ public class fragment2 extends Fragment {
                             }
                             newTask.setAllUsers((int) a.get("nummems"));
                             if (newTask.getUpVotes() != newTask.getAllUsers()) {
+                                //TODO: hi dan
                                 unclaimedTasks.add(newTask);
                             }
                             //TODO: currently doesn't add unclaimed task if has 4 votes, but also needs to
@@ -100,7 +109,10 @@ public class fragment2 extends Fragment {
                                 }
                             }
                             newTask.setAllUsers((int) a.get("nummems"));
-                            completedTasks.add(newTask);
+                            if (newTask.getUpVotes() != newTask.getAllUsers()) {
+                                //TODO: hi dan
+                                completedTasks.add(newTask);
+                            }
                         }
                     }
                     populateListView();
