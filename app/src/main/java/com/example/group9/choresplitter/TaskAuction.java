@@ -43,8 +43,8 @@ public class TaskAuction extends ActionBarActivity {
         setContentView(R.layout.activity_task_auction);
 
         Task thisTask = (Task) getIntent().getSerializableExtra("thisTask");
-
         MyDate createdDate = thisTask.getDateCreated();
+
         int createdDay = 122;
         int createdHour = 20;
         int createdMinute = 59;

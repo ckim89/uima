@@ -8,7 +8,6 @@ import java.util.Calendar;
  * Created by andrewding on 4/20/15.
  */
 
-@SuppressWarnings("serial")
 public class Task implements Serializable{
     private String name;
     private String id;
@@ -31,6 +30,10 @@ public class Task implements Serializable{
                         time.get(Calendar.HOUR_OF_DAY),
                         time.get(Calendar.MINUTE),
                         time.get(Calendar.SECOND));
+    }
+
+    public void createNow(int day, int hour, int minute, int seconds) {
+        dateCreated = new MyDate(day, hour, minute, seconds);
     }
 
     public void incrementPoints() {
