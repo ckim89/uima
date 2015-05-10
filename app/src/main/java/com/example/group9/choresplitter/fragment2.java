@@ -350,6 +350,7 @@ public class fragment2 extends Fragment {
                 }
 
             });
+            refresh();
         } else { //adding a vote
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
             query.whereEqualTo("taskID", curid);
@@ -365,6 +366,7 @@ public class fragment2 extends Fragment {
                 }
 
             });
+            refresh();
         }
 
         /*
@@ -428,6 +430,7 @@ public class fragment2 extends Fragment {
                 }
 
             });
+            refresh();
         } else {
             ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
             query.whereEqualTo("taskID", curid);
@@ -443,6 +446,7 @@ public class fragment2 extends Fragment {
                 }
 
             });
+            refresh();
         }
 
         //pendingTasks.remove(currentTask);
@@ -517,9 +521,18 @@ public class fragment2 extends Fragment {
                 }
 
             });
-
         }
+        refresh();
         //completedTasks.remove(currentTask);
         populateListView();
+    }
+
+    public void refresh() {
+        Fragment frg = null;
+        frg = getActivity().getSupportFragmentManager().findFragmentById(R.id.fr1);
+        final android.support.v4.app.FragmentTransaction ft = getActivity().getSupportFragmentManager().beginTransaction();
+        ft.detach(frg);
+        ft.attach(frg);
+        ft.commit();
     }
 }
