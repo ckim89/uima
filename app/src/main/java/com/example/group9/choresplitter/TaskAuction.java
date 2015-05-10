@@ -44,8 +44,6 @@ public class TaskAuction extends ActionBarActivity {
         setContentView(R.layout.activity_task_auction);
 
         Task thisTask = (Task) getIntent().getSerializableExtra("thisTask");
-        //TODO: get created time from somewhere instead of creating it here
-        thisTask.createNow();
 
         MyDate createdDate = thisTask.getDateCreated();
         int createdDay = 122;
