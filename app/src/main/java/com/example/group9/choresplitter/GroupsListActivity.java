@@ -89,6 +89,12 @@ public class GroupsListActivity extends ActionBarActivity {
                 Intent intent = new Intent(this, Credits.class);
                 startActivity(intent);
                 return true;
+            case R.id.add_member:
+                final GroupsListActivity mac = (GroupsListActivity) this;
+                final String id = mac.getGroupID();
+                Intent intent2 = new Intent(this, Addmember.class);
+                intent2.putExtra("GID", id).putExtra("name", mac.getGroupname());
+                startActivity(intent2);
             default:
                 return super.onOptionsItemSelected(item);
         }

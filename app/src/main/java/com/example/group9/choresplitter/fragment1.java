@@ -163,7 +163,9 @@ public class fragment1 extends Fragment {
                 MemberListItem clickedItem = memberList.get(position);
                 //String message = "You clicked position " + position + ", which is " + clickedItem.getName();
                 //Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getActivity(), MemberDetail.class));
+                Intent myIntent = new Intent(getActivity(), MemberDetail.class);
+                myIntent.putExtra("name",clickedItem.getName());
+                startActivity(myIntent);
             }
         });
     }
