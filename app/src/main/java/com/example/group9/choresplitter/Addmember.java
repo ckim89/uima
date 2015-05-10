@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Addmember extends ActionBarActivity {
+public class AddMember extends ActionBarActivity {
 
     Button invite;
 

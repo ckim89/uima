@@ -1,6 +1,5 @@
 package com.example.group9.choresplitter;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -18,18 +17,13 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.parse.FindCallback;
-import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
-import org.w3c.dom.Text;
-
-import java.lang.reflect.Member;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,7 +56,7 @@ public class fragment1 extends Fragment {
         {
             public void onClick(View view)
             {
-                Intent intent = new Intent(getActivity(), Addmember.class);
+                Intent intent = new Intent(getActivity(), AddMember.class);
                 intent.putExtra("GID", id).putExtra("name", mac.getGroupname());
                 startActivity(intent);
             }
