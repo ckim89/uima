@@ -77,8 +77,22 @@ public class fragment2 extends Fragment {
                             } else {
                                 //Has 4 pending votes
                                 //TODO: begin the task's timer and move it to unclaimed
-                                unclaimedTasks.add(newTask);
+                                newTask.setUpVotes(0);
+                                a.remove("approved");
+                                a.put("status", "unclaimed");
+
                                 newTask.createNow();
+                                MyDate createdDate = newTask.getDateCreated();
+                                ArrayList<Integer> dateFields = new ArrayList<Integer>();
+                                dateFields.add(createdDate.getDay());
+                                dateFields.add(createdDate.getHour());
+                                dateFields.add(createdDate.getMinute());
+                                dateFields.add(createdDate.getSecond());
+                                a.addAll("date", dateFields);
+                                a.saveInBackground();
+
+                                unclaimedTasks.add(newTask);
+
                             }
                         } else if (a.get("status").equals("unclaimed")) {
                             Task newTask = new Task((String) a.get("Name"), -1);
@@ -93,6 +107,8 @@ public class fragment2 extends Fragment {
                             newTask.setAllUsers((int) a.get("nummems"));
                             if (newTask.getUpVotes() != newTask.getAllUsers()) {
                                 //TODO: hi dan
+                                ArrayList<Integer> dateFields = (ArrayList<Integer>) a.get("date");
+                                newTask.createNow(dateFields.get(0), dateFields.get(1), dateFields.get(2), dateFields.get(3));
                                 unclaimedTasks.add(newTask);
                             }
                             //TODO: currently doesn't add unclaimed task if has 4 votes, but also needs to

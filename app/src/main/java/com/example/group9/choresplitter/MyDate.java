@@ -1,9 +1,11 @@
 package com.example.group9.choresplitter;
 
+import java.io.Serializable;
+
 /**
  * Created by andrewding on 5/2/15.
  */
-public class MyDate {
+public class MyDate implements Serializable{
     private int day;
     private int hour;
     private int minute;
