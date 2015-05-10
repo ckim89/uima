@@ -140,7 +140,7 @@ public class GroupList extends ActionBarActivity {
                 startActivity(intent);
                 return true;
             case R.id.add_group:
-                Intent intent2 = new Intent(this, Credits.class);
+                Intent intent2 = new Intent(this, AddGroup.class);
                 startActivity(intent2);
                 return true;
             default:

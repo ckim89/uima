@@ -41,6 +41,10 @@
             android:label="@string/title_activity_addmember" >
         </activity>
         <activity
+            android:name=".AddGroup"
+            android:label="@string/title_activity_addgroup" >
+        </activity>
+        <activity
             android:name=".TaskAuction"
             android:label="@string/title_activity_task_auction" >
         </activity>
