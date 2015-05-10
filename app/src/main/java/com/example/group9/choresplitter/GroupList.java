@@ -139,6 +139,10 @@ public class GroupList extends ActionBarActivity {
                 Intent intent = new Intent(this, Credits.class);
                 startActivity(intent);
                 return true;
+            case R.id.add_group:
+                Intent intent2 = new Intent(this, Credits.class);
+                startActivity(intent2);
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
