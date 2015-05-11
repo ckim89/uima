@@ -35,6 +35,7 @@ public class TaskAuction extends ActionBarActivity {
     private boolean completed;
     TextView auctionTimeRemainingText;
     private String auctionId;
+    String hms;
 
     private MyDate currentDate, finishDate;
 
@@ -82,9 +83,9 @@ public class TaskAuction extends ActionBarActivity {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("AuctionBids");
         query.whereEqualTo("groupID", GroupsListActivity.GID);
         query.findInBackground(new FindCallback<ParseObject>() {
-            ArrayList<String> bidders;
-            ArrayList<String> bidderPoints;
-            ArrayList<String> bidderTimestamp;
+            ArrayList<String> bidders = new ArrayList<String>();
+            ArrayList<String> bidderPoints = new ArrayList<String>();
+            ArrayList<String> bidderTimestamp = new ArrayList<String>();
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if (e == null) {
@@ -144,6 +145,9 @@ public class TaskAuction extends ActionBarActivity {
             TextView pointsText = (TextView) itemView.findViewById(R.id.member_points_field);
             pointsText.setText(currentItem.getBid() + "");
 
+            TextView timeText = (TextView) itemView.findViewById(R.id.auction_bid_time_remaining);
+            timeText.setText(currentItem.getTimestamp());
+
             return itemView;
         }
     }
@@ -158,7 +162,7 @@ public class TaskAuction extends ActionBarActivity {
         @Override
         public void onTick(long millisUntilFinished) {
             long millis = millisUntilFinished;
-            String hms = String.format("%02d:%02d:%02d:%02d", TimeUnit.MILLISECONDS.toDays(millis),
+            hms = String.format("%02d:%02d:%02d:%02d", TimeUnit.MILLISECONDS.toDays(millis),
                     TimeUnit.MILLISECONDS.toHours(millis) - TimeUnit.DAYS.toHours(TimeUnit.MILLISECONDS.toDays(millis)),
                     TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                     TimeUnit.MILLISECONDS.toSeconds(millis) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
@@ -183,7 +187,7 @@ public class TaskAuction extends ActionBarActivity {
 
     public void setBid(View view) {
         EditText auctionBidField = (EditText) findViewById(R.id.auction_bid_field);
-       int bid = (int) Integer.parseInt(auctionBidField.getText().toString());
+        int bid = (int) Integer.parseInt(auctionBidField.getText().toString());
 
         if (completed) {
             Toast.makeText(getApplicationContext(), "Auction is closed.", Toast.LENGTH_SHORT).show();
@@ -210,8 +214,11 @@ public class TaskAuction extends ActionBarActivity {
             //notify that this will be buyout
         }
 
-
+        //TODO: add bidder
+        String currentUser = ParseUser.getCurrentUser().getUsername().toString();
+        bidders.add(new Bidder(currentUser, bid, hms));
         //bidders.add(0, new Member("bidder"));
+        auctionBidField.setText("");
         populateListView();
     }
 

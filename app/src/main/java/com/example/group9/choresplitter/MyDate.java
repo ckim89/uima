@@ -11,11 +11,21 @@ public class MyDate implements Serializable{
     private int minute;
     private int second;
 
+    private int month;
+    private int monthDay;
+    private int year;
+
     public MyDate(int d, int h, int m, int s) {
         day = d;
         hour = h;
         minute = m;
         second = s;
+    }
+
+    public MyDate(int m, int d, int y) {
+        month = m;
+        monthDay = d;
+        year = y;
     }
 
     public int getDay() {
@@ -32,6 +42,18 @@ public class MyDate implements Serializable{
 
     public int getSecond() {
         return second;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
+    public int getMonthDay() {
+        return monthDay;
+    }
+
+    public int getYear() {
+        return year;
     }
 
     public void print() {

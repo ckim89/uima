@@ -9,34 +9,16 @@
     android:orientation="vertical"
     tools:context="com.example.group9.choresplitter.TaskAuction">
 
-    <LinearLayout
+    <TextView
+        android:id="@+id/auction_task_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center">
-        <TextView
-            android:id="@+id/auction_task_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:text="Task Name"
-            android:textSize="20dp"
-            android:textStyle="bold"/>
+        android:layout_marginRight="10dp"
+        android:text="Task Name"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:gravity="center"/>
 
-        <TextView
-            android:id="@+id/auction_task_points"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="XYZ"
-            android:textSize="20dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
-            android:text="Points"
-            android:textSize="20dp"/>
-    </LinearLayout>
 
 
     <LinearLayout

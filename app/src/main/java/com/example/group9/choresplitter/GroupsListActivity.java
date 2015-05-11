@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GroupsListActivity extends FragmentActivity implements ActionBar.TabListener {
+public class GroupsListActivity extends ActionBarActivity {
 
     Button B1;
     Button B2;
@@ -211,18 +211,4 @@ public class GroupsListActivity extends FragmentActivity implements ActionBar.Ta
         return memlist;
     }
 
-    @Override
-    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
-
-    }
-
-    @Override
-    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
-
-    }
-
-    @Override
-    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
-
-    }
 }

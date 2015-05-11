@@ -36,10 +36,9 @@ public class Task implements Serializable{
     public void completeNow() {
         Calendar time = Calendar.getInstance();
         dateCompleted = new MyDate(
-                time.get(Calendar.DAY_OF_YEAR),
-                time.get(Calendar.HOUR_OF_DAY),
-                time.get(Calendar.MINUTE),
-                time.get(Calendar.SECOND));
+                time.get(Calendar.MONTH) + 1,
+                time.get(Calendar.DAY_OF_MONTH),
+                time.get(Calendar.YEAR));
     }
 
     public void createNow(int day, int hour, int minute, int seconds) {

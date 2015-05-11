@@ -63,6 +63,7 @@ public class MemberDetail extends ActionBarActivity {
         //TODO: pull lists from database
         claimedTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
+        claimedTasks.add(new Task("hello", 1));
 
         context = getApplicationContext();
         populateListView();
@@ -201,7 +202,12 @@ public class MemberDetail extends ActionBarActivity {
             pointsText.setText(currentTask.getPoints() + "");
 
             TextView timeText = (TextView) itemView.findViewById(R.id.chore_list_time);
-            timeText.setText(("00:00:00"));
+            MyDate c = currentTask.getDateCompleted();
+            int month = c.getMonth();
+            int day = c.getMonthDay();
+            int year = c.getYear();
+            String time = String.format("%02d/%02d/%04d", month, day, year);
+            timeText.setText(time);
 
             return itemView;
         }
