@@ -17,10 +17,9 @@ public class Task implements Serializable{
     private int allUsers;
     private ArrayList<String> approval;
 
-    public Task(String n, int p, String i) {
+    public Task(String n, int p) {
         name = n;
         points = p;
-        id = i;
         approval = new ArrayList<String>();
     }
 
