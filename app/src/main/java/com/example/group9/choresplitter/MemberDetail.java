@@ -37,6 +37,7 @@ public class MemberDetail extends ActionBarActivity {
     Context context;
     private List<Task> claimedTasks;
     private List<Task> completedTasks;
+    List<ParseObject> tasks;
     ImageView imgFavorite;
     String username;
     boolean completed = false;
@@ -48,6 +49,9 @@ public class MemberDetail extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_detail);
+
+        tasks = new ArrayList<ParseObject>();
+
         Intent myIntent = getIntent(); // gets the previously created intent
         username = myIntent.getStringExtra("name"); // will return "FirstKeyValue"
         setTitle(username);
@@ -75,9 +79,15 @@ public class MemberDetail extends ActionBarActivity {
                     for(ParseObject a: list) {
                         if (a.get("claimedby") != null && a.get("claimedby").toString().equals(username)) {
                             if (a.get("status").toString().equals("claimed")) {
-                                claimedTasks.add(new Task(a.get("Name").toString(), (int) a.get("Points")));
+                                Task c = new Task(a.get("Name").toString(), (int) a.get("Points"));
+                                c.setId(a.get("taskID").toString());
+                                claimedTasks.add(c);
+                                tasks.add(a);
                             } else if (a.get("status").toString().equals("completed")) {
-                                completedTasks.add(new Task(a.get("Name").toString(), (int) a.get("Points")));
+                                Task c = new Task(a.get("Name").toString(), (int) a.get("Points"));
+                                c.setId(a.get("taskID").toString());
+                                completedTasks.add(c);
+                                tasks.add(a);
                             }
                         }
                     }
@@ -178,12 +188,19 @@ public class MemberDetail extends ActionBarActivity {
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
                 Task clickedItem = claimedTasks.get(position);
 
-                Intent intent = new Intent(getApplicationContext(), TaskDetail.class);
-                intent.putExtra("taskName", clickedItem.getName());
-                intent.putExtra("taskPoints", clickedItem.getPoints());
-                intent.putExtra("taskOwner", owner.getText().toString());
-                startActivityForResult(intent, REQUEST_CODE);
-                clickedPosition = position;
+                for (ParseObject a: tasks) {
+                    System.out.println(clickedItem.getName());
+                    if (a.get("claimedby") != null && a.get("claimedby").toString().equals(ParseUser.getCurrentUser().getUsername().toString())) {
+                        Intent intent = new Intent(getApplicationContext(), TaskDetail.class);
+                        intent.putExtra("taskName", clickedItem.getName());
+                        intent.putExtra("taskPoints", clickedItem.getPoints());
+                        intent.putExtra("taskOwner", owner.getText().toString());
+                        intent.putExtra("taskid", clickedItem.getId());
+                        startActivityForResult(intent, REQUEST_CODE);
+                        clickedPosition = position;
+                        break;
+                    }
+                }
             }
         });
     }
