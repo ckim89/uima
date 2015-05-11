@@ -22,8 +22,10 @@ import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,8 +38,10 @@ public class TaskAuction extends ActionBarActivity {
     TextView auctionTimeRemainingText;
     private String auctionId;
     String hms;
+    List<Integer> dates;
 
     private MyDate currentDate, finishDate;
+    ParseObject task;
 
 
     @Override
@@ -49,17 +53,48 @@ public class TaskAuction extends ActionBarActivity {
 
         MyDate createdDate = thisTask.getDateCreated();
         Bundle extras = getIntent().getExtras();
-        auctionId = extras.getString("TaskId");
+        auctionId = extras.getString("taskId");
+        System.out.println(auctionId);
 
         TextView auctionTaskName = (TextView) findViewById(R.id.auction_task_name);
-        TextView completeBy = (TextView) findViewById(R.id.auction_task_complete_by);
 
         auctionTaskName.setText(thisTask.getName());
-        MyDate date = thisTask.getDateToFinish();
-        MyDate day = thisTask.getDayToFinish();
-        String completeByDay = String.format("%02d/%02d/%04d", day.getMonth(), day.getMonthDay(), day.getYear());
-        String completeByTime = String.format("%02d:%02d:%02d", date.getHour(), date.getMinute(), date.getSecond());
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Task");
+        query.whereEqualTo("taskID", auctionId);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null) {
+                    for (ParseObject a : parseObjects) {
+                        if (a.get("taskID").toString().equals(auctionId)) {
+                            task = a;
+                        }
+                    }
+                    bidders = new ArrayList<Bidder>();
+
+                    ArrayList<String> tempBidders = (ArrayList<String>) task.get("bidders");
+                    ArrayList<Integer> tempBidderPoints = (ArrayList<Integer>) task.get("bidpoints");
+                    ArrayList<String> tempBidderTimestamp = (ArrayList<String>) task.get("timestamp");
+
+                    if (tempBidders != null) {
+                        for (int i = 0; i < tempBidders.size(); i++) {
+                            bidders.add(new Bidder(tempBidders.get(i), tempBidderPoints.get(i), tempBidderTimestamp.get(i)));
+                        }
+                    }
+
+                    populateListView();
+                }
+            }
+
+        });
+        System.out.println(task);
+
+        /*
+        String completeByDay = String.format("%02d/%02d/%04d", dates.get(0), dates.get(1), dates.get(2));
+        String completeByTime = String.format("%02d:%02d:%02d", dates.get(3), dates.get(4), dates.get(5));
         completeBy.setText(completeByDay + " at " + completeByTime);
+*/
 
 
         //TODO: get auction duration from elsewhere
@@ -90,11 +125,12 @@ public class TaskAuction extends ActionBarActivity {
         final CounterClass timer = new CounterClass(timerDuration, 1000);
         timer.start();
 
+        /*
         //TODO: get list of bidders from elsewhere
         bidders = new ArrayList<Bidder>();
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("AuctionBids");
-        query.whereEqualTo("groupID", GroupsListActivity.GID);
-        query.findInBackground(new FindCallback<ParseObject>() {
+        ParseQuery<ParseObject> query1 = ParseQuery.getQuery("AuctionBids");
+        query1.whereEqualTo("groupID", GroupsListActivity.GID);
+        query1.findInBackground(new FindCallback<ParseObject>() {
             ArrayList<String> bidders = new ArrayList<String>();
             ArrayList<String> bidderPoints = new ArrayList<String>();
             ArrayList<String> bidderTimestamp = new ArrayList<String>();
@@ -116,10 +152,7 @@ public class TaskAuction extends ActionBarActivity {
             }
 
         });
-
-
-        populateListView();
-        updateMembers();
+        */
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
     }
 
@@ -185,6 +218,14 @@ public class TaskAuction extends ActionBarActivity {
         public void onFinish() {
             completed = true;
             auctionTimeRemainingText.setText("Auction Closed");
+
+            Bidder minBid = bidders.get(bidders.size() - 1);
+            String name = minBid.getMember();
+
+            task.put("claimedby", name);
+            task.put("status", "claimed");
+            task.put("Points", minBid.getBid());
+            task.saveInBackground();
         }
     }
 
@@ -198,14 +239,13 @@ public class TaskAuction extends ActionBarActivity {
     }
 
     public void setBid(View view) {
-        EditText auctionBidField = (EditText) findViewById(R.id.auction_bid_field);
+        final EditText auctionBidField = (EditText) findViewById(R.id.auction_bid_field);
         int bid = (int) Integer.parseInt(auctionBidField.getText().toString());
 
         if (completed) {
             Toast.makeText(getApplicationContext(), "Auction is closed.", Toast.LENGTH_SHORT).show();
             return;
         }
-
 
         if (bidders.size() > 0) {
             //Check that the bid is a valid bid
@@ -229,13 +269,22 @@ public class TaskAuction extends ActionBarActivity {
         //TODO: add bidder
         String currentUser = ParseUser.getCurrentUser().getUsername().toString();
         bidders.add(new Bidder(currentUser, bid, hms));
-        //bidders.add(0, new Member("bidder"));
-        auctionBidField.setText("");
-        populateListView();
-    }
 
-    private void updateMembers() {
+        task.add("bidpoints", bid);
+        task.add("bidders", currentUser);
+        task.add("timestamp", hms);
+        task.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                //bidders.add(0, new Member("bidder"));
+                auctionBidField.setText("");
+                populateListView();
+            }
+        });
 
+
+
+        System.out.println(dates);
     }
 
     private class Bidder {

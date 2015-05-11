@@ -21,27 +21,6 @@
 
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginRight="10dp"
-        android:text="Complete By:"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:layout_below="@+id/auction_top_level"
-        android:layout_marginTop="10dp"/>
-
-    <TextView
-        android:id="@+id/auction_task_complete_by"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="Completion Date"
-        android:textSize="20dp"
-        android:layout_marginBottom="10dp"/>
-
-
-    <TextView
         android:id="@+id/auction_time_remaining_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -54,6 +33,7 @@
         android:id="@+id/auction_time_remaining"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:gravity="center"
         android:text="24:00:00"
         android:textSize="40dp"

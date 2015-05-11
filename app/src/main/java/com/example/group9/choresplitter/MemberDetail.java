@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FindCallback;
 import com.parse.ParseException;
 import com.parse.ParseFile;
 import com.parse.ParseObject;
@@ -60,10 +61,44 @@ public class MemberDetail extends ActionBarActivity {
             }
         });
 
+
         //TODO: pull lists from database
         claimedTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
-        claimedTasks.add(new Task("hello", 1));
+
+        ParseQuery<ParseObject> query1 = ParseQuery.getQuery("Task");
+        query1.whereEqualTo("groupID", GroupsListActivity.GID);
+        query1.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> list, ParseException e) {
+                if (e == null) {
+                    for(ParseObject a: list) {
+                        if (a.get("claimedby") != null && a.get("claimedby").toString().equals(username)) {
+                            if (a.get("status").toString().equals("claimed")) {
+                                claimedTasks.add(new Task(a.get("Name").toString(), (int) a.get("Points")));
+                            } else if (a.get("status").toString().equals("completed")) {
+                                completedTasks.add(new Task(a.get("Name").toString(), (int) a.get("Points")));
+                            }
+                        }
+                    }
+                }
+                ParseQuery<ParseUser> query = ParseUser.getQuery();
+                ParseQuery<ParseUser> userqueries = query.whereEqualTo("username", username);
+                try {
+                    ParseUser user = userqueries.getFirst();
+                    if (user.getParseFile("picture") != null)
+                    {
+                        ParseFile file = user.getParseFile("picture");
+                        ImageView imageView = (ImageView) findViewById(R.id.prof_pic);
+                        byte[] bitmapdata = file.getData();
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
+                        imageView.setImageBitmap(bitmap);
+                    }
+                } catch (ParseException f) {
+                    f.printStackTrace();
+                }
+            }
+        });
 
         context = getApplicationContext();
         populateListView();
@@ -78,23 +113,6 @@ public class MemberDetail extends ActionBarActivity {
 
         memberName.setText(username);
         memberPoints.setText(extras.getInt("points") + "");
-
-
-        ParseQuery<ParseUser> query = ParseUser.getQuery();
-        ParseQuery<ParseUser> userqueries = query.whereEqualTo("username", username);
-        try {
-            ParseUser user = userqueries.getFirst();
-            if (user.getParseFile("picture") != null)
-            {
-                ParseFile file = user.getParseFile("picture");
-                ImageView imageView = (ImageView) findViewById(R.id.prof_pic);
-                byte[] bitmapdata = file.getData();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
-                imageView.setImageBitmap(bitmap);
-            }
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -147,10 +165,6 @@ public class MemberDetail extends ActionBarActivity {
             TextView pointsText = (TextView) itemView.findViewById(R.id.chore_list_points);
             pointsText.setText(currentTask.getPoints() + "");
 
-            TextView timeText = (TextView) itemView.findViewById(R.id.chore_list_time);
-            //TODO: figure out time remaining
-            //timeText.setText((currentTask.getTimeCreated()) + "");
-            timeText.setText(("Time Remaining"));
 
             return itemView;
         }
@@ -163,8 +177,6 @@ public class MemberDetail extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
                 Task clickedItem = claimedTasks.get(position);
-                String message = "You clicked position " + position + ", which is " + clickedItem.getName();
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
                 Intent intent = new Intent(getApplicationContext(), TaskDetail.class);
                 intent.putExtra("taskName", clickedItem.getName());
@@ -201,6 +213,7 @@ public class MemberDetail extends ActionBarActivity {
             TextView pointsText = (TextView) itemView.findViewById(R.id.chore_list_points);
             pointsText.setText(currentTask.getPoints() + "");
 
+            /*
             TextView timeText = (TextView) itemView.findViewById(R.id.chore_list_time);
             MyDate c = currentTask.getDateCompleted();
             int month = c.getMonth();
@@ -208,6 +221,7 @@ public class MemberDetail extends ActionBarActivity {
             int year = c.getYear();
             String time = String.format("%02d/%02d/%04d", month, day, year);
             timeText.setText(time);
+            */
 
             return itemView;
         }
@@ -219,8 +233,6 @@ public class MemberDetail extends ActionBarActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
                 Task clickedItem = completedTasks.get(position);
-                String message = "You clicked position " + position + ", which is " + clickedItem.getName();
-                Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
 
             }
         });

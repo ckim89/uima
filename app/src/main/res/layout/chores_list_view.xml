@@ -27,10 +27,4 @@
             android:textColor="@color/black"/>
         </LinearLayout>
 
-    <TextView
-        android:id="@+id/chore_list_time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Time Left"
-        android:textColor="@color/black"/>
 </LinearLayout>

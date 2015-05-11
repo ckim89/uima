@@ -23,6 +23,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -271,7 +272,10 @@ public class fragment2 extends Fragment {
                 Task clickedItem = unclaimedTasks.get(position);
                 Intent intent = new Intent(getActivity(), TaskAuction.class);
                 intent.putExtra("thisTask", clickedItem);
-                intent.putExtra("taskId", clickedItem.getId()); //TODO: get task id
+                intent.putExtra("taskId", clickedItem.getId());
+                System.out.println("this is it" + clickedItem.getId());
+
+
                 startActivity(intent);
             }
         });
