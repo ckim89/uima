@@ -4,7 +4,4 @@
     tools:context="com.example.group9.choresplitter.MemberDetail">
     <item android:id="@+id/credits" android:title="Credits"
         android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/camera" android:title="camera"
-        android:icon="@drawable/camera"
-        android:orderInCategory="100" app:showAsAction="ifRoom" />
 </menu>

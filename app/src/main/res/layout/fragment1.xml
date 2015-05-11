@@ -115,7 +115,6 @@
         android:id="@+id/loser_image_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/dan_image"
         android:maxWidth="200dp"
         android:maxHeight="200dp"
         android:scaleType="fitCenter"
