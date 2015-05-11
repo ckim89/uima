@@ -52,6 +52,9 @@ public class fragment1 extends Fragment {
         userpoints = new ArrayList<Integer>();
         memPair = new ArrayList<Pair>();
 
+        TextView groupName = (TextView) rootView.findViewById(R.id.group_name_text);
+        groupName.setText(GroupsListActivity.groupName);
+
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Groups");
         query.whereEqualTo("GroupID", id);
         query.findInBackground(new FindCallback<ParseObject>() {

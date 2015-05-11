@@ -32,6 +32,8 @@ public class GroupsListActivity extends ActionBarActivity {
     static String GID;
     String name;
 
+    public static String groupName;
+
     fragment1 f1;
     fragment2 f2;
     boolean visibleFragment;
@@ -49,6 +51,7 @@ public class GroupsListActivity extends ActionBarActivity {
         Bundle extra = getIntent().getExtras();
         String groupid = extra.getString("GroupID");
         name = extra.getString("GroupName");
+        groupName = name;
         setTitle(name);
         GID = groupid;
         f1 = new fragment1();
@@ -154,6 +157,7 @@ public class GroupsListActivity extends ActionBarActivity {
             System.out.println(m.getUserName());
         }
     }
+
 
 
     public void cancelUnclaimedChore(View view) {
