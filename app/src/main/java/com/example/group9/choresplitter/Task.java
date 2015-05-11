@@ -14,6 +14,8 @@ public class Task implements Serializable{
     private int points;
     private MyDate dateCreated;
     private MyDate dateCompleted;
+    private MyDate dateToFinish;
+    private MyDate dayToFinish;
     private int upVotes;
     private int allUsers;
     private ArrayList<String> approval;
@@ -31,6 +33,18 @@ public class Task implements Serializable{
                         time.get(Calendar.HOUR_OF_DAY),
                         time.get(Calendar.MINUTE),
                         time.get(Calendar.SECOND));
+
+        time.add(Calendar.DAY_OF_MONTH, 7);
+        dayToFinish = new MyDate(
+                        time.get(Calendar.MONTH) + 1,
+                        time.get(Calendar.DAY_OF_MONTH),
+                        time.get(Calendar.YEAR));
+
+        dateToFinish = new MyDate(
+                        dateCreated.getDay(),
+                        dateCreated.getHour(),
+                        dateCreated.getMinute(),
+                        dateCreated.getSecond());
     }
 
     public void completeNow() {
@@ -93,6 +107,14 @@ public class Task implements Serializable{
 
     public MyDate getDateCompleted() {
         return dateCompleted;
+    }
+
+    public MyDate getDateToFinish() {
+        return dateToFinish;
+    }
+
+    public MyDate getDayToFinish() {
+        return dayToFinish;
     }
 
     public ArrayList<String> getApprovedBy() {

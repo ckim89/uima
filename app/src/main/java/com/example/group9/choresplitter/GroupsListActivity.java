@@ -176,11 +176,6 @@ public class GroupsListActivity extends ActionBarActivity {
         return name;
     }
 
-    public void addPending(View view) {
-        //ListView l = (ListView) findViewById(R.id.pending_chores_list_view);
-        SignIn.pendingTasks.add(new Task("EUWEH", 1));
-    }
-
     private ArrayList<Member> getMembers() {
         /*
         //to get current user name

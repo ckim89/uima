@@ -46,9 +46,21 @@ public class TaskAuction extends ActionBarActivity {
         setContentView(R.layout.activity_task_auction);
 
         Task thisTask = (Task) getIntent().getSerializableExtra("thisTask");
+
         MyDate createdDate = thisTask.getDateCreated();
         Bundle extras = getIntent().getExtras();
         auctionId = extras.getString("TaskId");
+
+        TextView auctionTaskName = (TextView) findViewById(R.id.auction_task_name);
+        TextView completeBy = (TextView) findViewById(R.id.auction_task_complete_by);
+
+        auctionTaskName.setText(thisTask.getName());
+        MyDate date = thisTask.getDateToFinish();
+        MyDate day = thisTask.getDayToFinish();
+        String completeByDay = String.format("%02d/%02d/%04d", day.getMonth(), day.getMonthDay(), day.getYear());
+        String completeByTime = String.format("%02d:%02d:%02d", date.getHour(), date.getMinute(), date.getSecond());
+        completeBy.setText(completeByDay + " at " + completeByTime);
+
 
         //TODO: get auction duration from elsewhere
         int auctionDurationHours = 24;
