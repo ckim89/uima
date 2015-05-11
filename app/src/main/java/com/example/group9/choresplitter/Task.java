@@ -13,14 +13,14 @@ public class Task implements Serializable{
     private String id;
     private int points;
     private MyDate dateCreated;
+    private MyDate dateCompleted;
     private int upVotes;
     private int allUsers;
     private ArrayList<String> approval;
 
-    public Task(String n, int p, String i) {
+    public Task(String n, int p) {
         name = n;
         points = p;
-        id = i;
         approval = new ArrayList<String>();
     }
 
@@ -31,6 +31,15 @@ public class Task implements Serializable{
                         time.get(Calendar.HOUR_OF_DAY),
                         time.get(Calendar.MINUTE),
                         time.get(Calendar.SECOND));
+    }
+
+    public void completeNow() {
+        Calendar time = Calendar.getInstance();
+        dateCompleted = new MyDate(
+                time.get(Calendar.DAY_OF_YEAR),
+                time.get(Calendar.HOUR_OF_DAY),
+                time.get(Calendar.MINUTE),
+                time.get(Calendar.SECOND));
     }
 
     public void createNow(int day, int hour, int minute, int seconds) {
@@ -81,6 +90,10 @@ public class Task implements Serializable{
 
     public MyDate getDateCreated() {
         return dateCreated;
+    }
+
+    public MyDate getDateCompleted() {
+        return dateCompleted;
     }
 
     public ArrayList<String> getApprovedBy() {

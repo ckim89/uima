@@ -38,6 +38,10 @@ public class MemberDetail extends ActionBarActivity {
     private List<Task> completedTasks;
     ImageView imgFavorite;
     String username;
+    boolean completed = false;
+    int clickedPosition;
+
+    final int REQUEST_CODE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +50,7 @@ public class MemberDetail extends ActionBarActivity {
         Intent myIntent = getIntent(); // gets the previously created intent
         username = myIntent.getStringExtra("name"); // will return "FirstKeyValue"
         setTitle(username);
+
 
         imgFavorite = (ImageView)findViewById(R.id.prof_pic);
         imgFavorite.setOnClickListener(new View.OnClickListener() {
@@ -58,18 +63,21 @@ public class MemberDetail extends ActionBarActivity {
         //TODO: pull lists from database
         claimedTasks = new ArrayList<Task>();
         completedTasks = new ArrayList<Task>();
-        claimedTasks.add(new Task("Task1", 0));
-        claimedTasks.add(new Task("Task2", 5));
-        claimedTasks.add(new Task("Task3", 39));
-        completedTasks.add(new Task("Task4", 3));
-        completedTasks.add(new Task("Task5", 22));
-        completedTasks.add(new Task("Task6", 44));
-        completedTasks.add(new Task("Task7", 13));
 
         context = getApplicationContext();
         populateListView();
         registerClickCallbackClaimed();
         registerClickCallbackCompleted();
+
+        TextView memberName = (TextView) findViewById(R.id.member_detail_name_text);
+        TextView memberPoints = (TextView) findViewById(R.id.member_detail_points_text);
+
+
+        Bundle extras = getIntent().getExtras();
+
+        memberName.setText(username);
+        memberPoints.setText(extras.getInt("points") + "");
+
 
         ParseQuery<ParseUser> query = ParseUser.getQuery();
         ParseQuery<ParseUser> userqueries = query.whereEqualTo("username", username);
@@ -149,12 +157,20 @@ public class MemberDetail extends ActionBarActivity {
 
     private void registerClickCallbackClaimed() {
         ListView list = (ListView) findViewById(R.id.chores_claimed_list_view);
+        final TextView owner = (TextView) findViewById(R.id.member_detail_name_text);
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id) {
                 Task clickedItem = claimedTasks.get(position);
                 String message = "You clicked position " + position + ", which is " + clickedItem.getName();
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
+                Intent intent = new Intent(getApplicationContext(), TaskDetail.class);
+                intent.putExtra("taskName", clickedItem.getName());
+                intent.putExtra("taskPoints", clickedItem.getPoints());
+                intent.putExtra("taskOwner", owner.getText().toString());
+                startActivityForResult(intent, REQUEST_CODE);
+                clickedPosition = position;
             }
         });
     }
@@ -199,6 +215,7 @@ public class MemberDetail extends ActionBarActivity {
                 Task clickedItem = completedTasks.get(position);
                 String message = "You clicked position " + position + ", which is " + clickedItem.getName();
                 Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -238,24 +255,44 @@ public class MemberDetail extends ActionBarActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // TODO Auto-generated method stub
         super.onActivityResult(requestCode, resultCode, data);
-        Bitmap bp = (Bitmap) data.getExtras().get("data");
-        imgFavorite.setImageBitmap(bp);
-        try {
-            saveImage(bp);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (data != null) {
+            Bitmap bp = (Bitmap) data.getExtras().get("data");
+            imgFavorite.setImageBitmap(bp);
+            try {
+                saveImage(bp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+            ImageView img = (ImageView) findViewById(R.id.prof_pic);
+            img.setImageBitmap(bp);
         }
 
-        ImageView img= (ImageView) findViewById(R.id.prof_pic);
-        img.setImageBitmap(bp);
+        if (requestCode == REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                completed = data.getBooleanExtra("completed", false);
+
+                if (completed) {
+                    Task moveTask = claimedTasks.get(clickedPosition);
+                    moveTask.completeNow();
+                    claimedTasks.remove(moveTask);
+                    completedTasks.add(moveTask);
+                    populateListView();
+                }
+            }
+        }
+
     }
 
     protected void saveImage(Bitmap bp) throws IOException, ParseException {
 
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        if (bp != null) {
+            bp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        }
         byte[] byteArray = stream.toByteArray();
         ParseFile file = new ParseFile("prof_pic.png", byteArray);
 

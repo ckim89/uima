@@ -52,6 +52,10 @@
             android:name=".TaskAuction"
             android:label="@string/title_activity_task_auction" >
         </activity>
+        <activity
+            android:name=".TaskDetail"
+            android:label="@string/title_activity_task_detail" >
+        </activity>
     </application>
 
 </manifest>

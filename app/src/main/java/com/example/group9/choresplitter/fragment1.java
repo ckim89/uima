@@ -51,7 +51,7 @@ public class fragment1 extends Fragment {
         userList = new ArrayList<String>();
         userpoints = new ArrayList<Integer>();
         memPair = new ArrayList<Pair>();
-        invite = (Button)rootView.findViewById(R.id.inviteMember);
+        invite = (Button) rootView.findViewById(R.id.inviteMember);
         invite.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View view)
@@ -183,7 +183,8 @@ public class fragment1 extends Fragment {
                 //String message = "You clicked position " + position + ", which is " + clickedItem.getName();
                 //Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
                 Intent myIntent = new Intent(getActivity(), MemberDetail.class);
-                myIntent.putExtra("name",clickedItem.getName());
+                myIntent.putExtra("name", clickedItem.getName());
+                myIntent.putExtra("points", clickedItem.getPoints());
                 startActivity(myIntent);
             }
         });

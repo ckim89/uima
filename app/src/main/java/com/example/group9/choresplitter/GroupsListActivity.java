@@ -1,7 +1,10 @@
 package com.example.group9.choresplitter;
 
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.graphics.Color;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class GroupsListActivity extends ActionBarActivity {
+public class GroupsListActivity extends FragmentActivity implements ActionBar.TabListener {
 
     Button B1;
     Button B2;
@@ -40,6 +43,8 @@ public class GroupsListActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_groups_list);
+
+        final ActionBar actionBar = getActionBar();
 
         Bundle extra = getIntent().getExtras();
         String groupid = extra.getString("GroupID");
@@ -204,5 +209,20 @@ public class GroupsListActivity extends ActionBarActivity {
             }
         });
         return memlist;
+    }
+
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
+    }
+
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
+
     }
 }
