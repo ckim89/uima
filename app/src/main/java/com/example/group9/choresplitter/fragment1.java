@@ -108,6 +108,15 @@ public class fragment1 extends Fragment {
                     }
 
                     memberList = sortMembers(memberList);
+                    String lastPlaceMember = memberList.get(memberList.size() - 1).getName();
+                    TextView loserNameText = (TextView) rootView.findViewById(R.id.loser_name_text_view);
+                    loserNameText.setText(lastPlaceMember);
+
+                    ImageView loserImage = (ImageView) rootView.findViewById(R.id.loser_image_view);
+                    //TODO: hi kevin
+
+
+
                     //Build adapter
                     ArrayAdapter<MemberListItem> adapter = new MemberListAdapter();
 
