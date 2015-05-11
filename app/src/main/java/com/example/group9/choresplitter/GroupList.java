@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,10 +19,13 @@ import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
+import com.parse.ParseFile;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -179,8 +183,49 @@ public class GroupList extends ActionBarActivity {
                 Intent intent2 = new Intent(this, AddGroup.class);
                 startActivity(intent2);
                 return true;
+            case R.id.camera:
+                open();
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public void open(){
+        Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(intent, 0);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        // TODO Auto-generated method stub
+        super.onActivityResult(requestCode, resultCode, data);
+        if (data != null) {
+            Bitmap bp = (Bitmap) data.getExtras().get("data");
+            try {
+                saveImage(bp);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    protected void saveImage(Bitmap bp) throws IOException, ParseException {
+
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        if (bp != null) {
+            bp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        }
+        byte[] byteArray = stream.toByteArray();
+        ParseFile file = new ParseFile("prof_pic.png", byteArray);
+
+        /*
+        ParseQuery<ParseUser> query = ParseUser.getQuery();
+        ParseQuery<ParseUser> userqueries = query.whereEqualTo("username", username);
+        ParseUser user = userqueries.getFirst();
+        */
+        ParseUser user = ParseUser.getCurrentUser();
+        user.put("picture", file);
+        user.saveInBackground();
     }
 }
