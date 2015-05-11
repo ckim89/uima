@@ -51,16 +51,6 @@ public class fragment1 extends Fragment {
         userList = new ArrayList<String>();
         userpoints = new ArrayList<Integer>();
         memPair = new ArrayList<Pair>();
-        invite = (Button) rootView.findViewById(R.id.inviteMember);
-        invite.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View view)
-            {
-                Intent intent = new Intent(getActivity(), AddMember.class);
-                intent.putExtra("GID", id).putExtra("name", mac.getGroupname());
-                startActivity(intent);
-            }
-        });
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Groups");
         query.whereEqualTo("GroupID", id);

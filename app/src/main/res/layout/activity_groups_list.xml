@@ -6,62 +6,59 @@
     android:background="#00000000"
     android:id="@+id/main">
 
-    <LinearLayout android:layout_width="fill_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="2"
-        android:id="@+id/buttons"
-        android:orientation="horizontal">
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Members"
-            android:id="@+id/button"
-            android:background="@color/teal"
-            android:textColor="@color/white"/>
-
-        <Button
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Chores"
-            android:id="@+id/button2"
-            style="?android:attr/borderlessButtonStyle"
-            android:background="@color/teal"
-            android:textColor="@color/white"/>
-    </LinearLayout>
-
-    <LinearLayout android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:weightSum="2"
-        android:id="@+id/group"
-        android:layout_below="@+id/buttons"
         android:orientation="vertical">
-        <TextView
-            android:id="@+id/highlight1"
-            android:layout_width="163dp"
-            android:layout_height="5dp"
-            android:background="@color/red"
-            android:layout_below="@+id/button"
-            android:layout_alignLeft="@+id/button"/>
 
-        <TextView
-            android:id="@+id/highlight2"
-            android:layout_width="163dp"
-            android:layout_height="5dp"
-            android:background="@color/offwhite"
-            android:layout_below="@+id/button2"
-            android:layout_alignLeft="@+id/button2"/>
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="2"
+            android:orientation="horizontal">
+            <Button
+                android:id="@+id/button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Members"
+                android:background="@color/teal"
+                android:textColor="@color/white"/>
 
-        <TextView
-            android:id="@+id/dividng_bar"
-            android:layout_width="2dp"
-            android:layout_height="40dp"
-            android:background="@color/black"
-            android:layout_toRightOf="@id/button"
-            android:layout_alignTop="@+id/button"/>
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Chores"
+                style="?android:attr/borderlessButtonStyle"
+                android:background="@color/teal"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+
+        <LinearLayout android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="1000"
+            android:id="@+id/group"
+            android:layout_below="@+id/buttons"
+            android:orientation="horizontal">
+            <TextView
+                android:layout_weight="500"
+                android:id="@+id/highlight1"
+                android:layout_width="0dp"
+                android:layout_height="5dp"
+                android:background="@color/red"/>
+
+            <TextView
+                android:layout_weight="500"
+                android:id="@+id/highlight2"
+                android:layout_width="0dp"
+                android:layout_height="5dp"
+                android:background="@color/offwhite"/>
+
+        </LinearLayout>
 
         <RelativeLayout
+            android:layout_weight="0"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/button2"
@@ -69,5 +66,7 @@
             android:id="@+id/fr1"
             />
     </LinearLayout>
+
+
 
 </RelativeLayout>

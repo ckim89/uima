@@ -30,9 +30,12 @@
             android:layout_weight="0.27" />
         <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Invite!"
-            android:id="@+id/inviteMember" />
+            android:layout_height="30dp"
+            android:layout_marginLeft="10dp"
+            android:text="Submit"
+            android:background="@color/green"
+            android:onClick="changeLoserText"
+            android:id="@+id/change_loser_text_button" />
     </LinearLayout>
 
     <LinearLayout
