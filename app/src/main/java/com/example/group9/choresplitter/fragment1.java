@@ -113,9 +113,30 @@ public class fragment1 extends Fragment {
                     loserNameText.setText(lastPlaceMember);
 
                     ImageView loserImage = (ImageView) rootView.findViewById(R.id.loser_image_view);
-                    //TODO: hi kevin
 
-
+                    ParseQuery<ParseUser> query = ParseUser.getQuery();
+                    ParseQuery<ParseUser> userqueries = query.whereEqualTo("username", lastPlaceMember);
+                    ParseUser loser = null;
+                    try {
+                        loser = userqueries.getFirst();
+                    } catch (ParseException e1) {
+                        e1.printStackTrace();
+                    }
+                    if (loser.getParseFile("picture") != null)
+                    {
+                        ParseFile file = loser.getParseFile("picture");
+                        byte[] bitmapdata = new byte[0];
+                        try {
+                            bitmapdata = file.getData();
+                        } catch (ParseException e1) {
+                            e1.printStackTrace();
+                        }
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapdata, 0, bitmapdata.length);
+                        loserImage.setImageBitmap(bitmap);
+                    }
+                    else {
+                        loserImage.setImageResource(R.drawable.avatar1);
+                    }
 
                     //Build adapter
                     ArrayAdapter<MemberListItem> adapter = new MemberListAdapter();
