@@ -1,7 +1,9 @@
 package com.example.group9.choresplitter;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -12,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.parse.FindCallback;
 import com.parse.ParseException;
@@ -28,6 +31,8 @@ public class GroupList extends ActionBarActivity {
     List<String> groups;
     List<ParseObject> group;
     List<String> pgroups;
+    List<String> groups1;
+    List<ParseObject> gg;
     List<ParseObject> pgroup;
     GroupList a = this;
 
@@ -42,27 +47,29 @@ public class GroupList extends ActionBarActivity {
         dlg.show();
 
         groups = new ArrayList<String>();
+        groups1 = new ArrayList<String>();
         group = new ArrayList<ParseObject>();
+        gg = new ArrayList<ParseObject>();
         pgroups = new ArrayList<String>();
         pgroup = new ArrayList<ParseObject>();
         Bundle extra = getIntent().getExtras();
         final String user = extra.getString("username");
-        System.out.println(user);
 
         final ParseUser u = ParseUser.getCurrentUser();
-        groups = (ArrayList<String>) u.get("Groups");
+        groups1 = (ArrayList<String>) u.get("Groups");
 
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Groups");
-        query.whereContainedIn("GroupID", groups);
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if (e == null) {
-                    groups.clear();
                     for (ParseObject a : parseObjects) {
-                        String add = (String) a.get("GroupName");
-                        groups.add(add);
-                        group.add(a);
+                        gg.add(a);
+                        if (groups1.contains(a.get("GroupID").toString())) {
+                            String add = (String) a.get("GroupName");
+                            groups.add(add);
+                            group.add(a);
+                        }
                     } //hi dan
 
                     ListView lv = (ListView) findViewById(R.id.GroupList);
@@ -94,9 +101,9 @@ public class GroupList extends ActionBarActivity {
             @Override
             public void done(List<ParseObject> parseObjects, ParseException e) {
                 if (e == null) {
+                    final ArrayList<ParseObject> invite = (ArrayList<ParseObject>) parseObjects;
                     for (ParseObject a : parseObjects) {
                         String add = (String) a.get("GroupName");
-                        System.out.println(a.get("GroupName"));
                         pgroups.add(add);
                         pgroup.add(a);
                     } //hi dan
@@ -109,11 +116,40 @@ public class GroupList extends ActionBarActivity {
                     lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            ParseObject item = pgroup.get(position);
-                            Intent intent = new Intent(getApplicationContext(), GroupsListActivity.class)
-                                    .putExtra("GroupID", item.getString("GroupID"))
-                                    .putExtra("GroupName", item.getString("GroupName"));
-                            startActivity(intent);
+                            final ParseObject item = pgroup.get(position);
+                            DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    switch (which) {
+                                        case DialogInterface.BUTTON_POSITIVE:
+                                            ParseUser user = ParseUser.getCurrentUser();
+                                            user.add("Groups", (String) item.get("groupID"));
+                                            for (ParseObject a: gg) {
+                                                if (a.get("GroupID").toString().equals(item.get("groupID").toString())) {
+                                                    a.add("Users", user.getUsername().toString());
+                                                    a.saveInBackground();
+                                                    break;
+                                                }
+                                            }
+                                            user.saveInBackground();
+                                            item.deleteInBackground();
+                                            Toast.makeText(GroupList.this, "You have been added to the group!", Toast.LENGTH_SHORT).show();
+                                            finish();
+                                            Intent createAccount = new Intent(getApplicationContext(), GroupList.class)
+                                                    .putExtra("username", ParseUser.getCurrentUser().getUsername().toString());
+                                            startActivity(createAccount);
+                                            break;
+
+                                        case DialogInterface.BUTTON_NEGATIVE:
+                                            //No button clicked
+                                            break;
+                                    }
+                                }
+                            };
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(GroupList.this);
+                            builder.setMessage("Would you like to join this group?").setPositiveButton("Yes", dialogClickListener)
+                                    .setNegativeButton("No", dialogClickListener).show();
                         }
                     });
                 }

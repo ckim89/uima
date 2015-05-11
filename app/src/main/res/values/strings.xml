@@ -15,4 +15,5 @@
     <string name="title_activity_addtask">Add Task</string>
     <string name="title_activity_task_auction">TaskAuction</string>
     <string name="title_activity_task_detail">TaskDetail</string>
+    <string name="title_activity_join_group">joinGroup</string>
 </resources>
