@@ -290,7 +290,6 @@ public class MemberDetail extends ActionBarActivity {
                 }
             }
         }
-
     }
 
     protected void saveImage(Bitmap bp) throws IOException, ParseException {
